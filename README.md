@@ -8,7 +8,10 @@
 
 > **"Privacy where it matters, Transparency where it counts."**
 > 
-> Contracks is the world's first **Confidential CLM** built on Ethereum using Zama's fhEVM. It allows enterprises to draft, sign, and **automatically execute** legal agreements (Salaries, Board Votes, Vesting) on-chain without ever revealing the sensitive data (amounts, votes, targets) to the public validators.
+> Contracks is the world's first **Confidential CLM** built on Ethereum using Zama's FHEVM. It allows enterprises to draft, sign, and **automatically execute** legal agreements on-chain without ever revealing the sensitive data (amounts, votes, targets) to the public validators.
+And also lets them compute on their data without ever revealing it, levaraging Zama's true utility.
+
+> Contracts is not only about encrypting and storing data, its about performing logic/math on it.
 
 ---
 
@@ -35,10 +38,14 @@
 ### The "Blockchain Privacy Paradox"
 Public blockchains like Ethereum are revolutionary for trust, but **terrible for business privacy**. 
 * You cannot put an employee's salary on-chain because everyone can see it.
+* You cannot privately close a deal with a client.
+* Nowadays, Procurement Contracts like Firm Fixed-Price(FFP) requires privacy and compute.
 * You cannot conduct a secret board vote on-chain because the live tally influences the voters.
 
 ### The Solution: Fully Homomorphic Encryption (FHE)
-Contracks leverages **Zama's fhEVM** to solve this. FHE allows us to perform mathematical operations on encrypted data.
+Contracks leverages **Zama's FHEVM** to solve this. FHE allows us to perform mathematical operations on encrypted data.
+
+ZK cant do what FHE does, Contracks not only store encrypted data but performs the math on it.
 
 * **Traditional Encryption:** Data is locked. To use it, you must decrypt it (exposing it).
 * **FHE (Contracks):** Data remains locked *during* processing.
@@ -54,30 +61,39 @@ Contracks is a hybrid dApp that merges high-performance Web2 indexing with state
 ### High-Level Data Flow
 
 1.  **Drafting (Client-Side):**
-    * User uploads a legal PDF.
-    * Sensitive fields (e.g., "Salary: $5000") are extracted.
-    * **Zama SDK** generates a temporary private key in the browser and encrypts the $5000 into a hash.
+    * User chooses a contract-type.
+    * Asks AI to help him write or guide while drafting his contract.
+    * User can draft very precise, neat and tidy Contracts with the high quality text editor ~ TinyMCE
+    * 2 types of Sensitive fields (e.g., "Salary: $5000", "Company Name: Zama") are extracted.
+    * Sensitive fields are classified into: 
+            1. Dynamic Data - Requires Compution
+            2. Static Data - Doesnt requires Computation
+    * **RelayerSDK** generates encrypted handles (ciphertexts) of the Dynamic Data.
 2.  **Storage (IPFS & MongoDB):**
-    * The raw legal text/PDF is pinned to **IPFS (Pinata)** for immutability.
-    * The metadata (Who sent it? What is the IPFS CID? Is it signed?) is indexed in **MongoDB** for instant UI loading.
-3.  **Auditing (AI Layer):**
-    * The **Google Gemini 2.0 Flash** model scans the contract text.
-    * It identifies "Risky Clauses" and respects the FHE placeholders, explaining context without guessing values.
+    * The raw legal Text/PDF and the Static Data are encrypted via AES-256 Encryption with the same AES-Key.
+    * The seed ( used to generate the AES-Key ) is encrypted with Zama.
+    * The raw legal text/PDF and Static Data is pinned to **IPFS (Pinata)** for immutability.
+    * Offchain Indexer: The metadata (Who sent it? What is the IPFS CID? Is it signed?) is indexed in **MongoDB** for instant UI loading.
+3.  **Summarize (AI Layer):**
+    * The **Google Gemini 2.0 Flash** model scans the contract text excluding Sensitive Fields.
+    * It identifies "Risky Clauses" and respects the FHE placeholders and Static placeholders, explaining context without guessing values.
 4.  **Execution (On-Chain):**
-    * The encrypted hash is sent to the Smart Contract.
-    * The contract stores it as `euint64` (Encrypted Unsigned Integer).
-    * Payroll logic executes automatically every month using these hidden values.
-
-
+    * The encrypted Fields along with the Seed are sent to the Smart Contract.
 
 ---
 
 ## 🔥 Features & Use Cases
 
-### 1. Confidential Payroll Streams
-* **Logic:** Managers set up streams where the `FlowRate` is encrypted.
-* **Tech:** Uses `TFHE.allow(address, value)` to grant the employee specific permission to view their own decrypted salary, while the employer maintains the write access.
-* **Result:** A fully automated payroll system where not even the blockchain validators know the payroll burden.
+### 1. Confidential PSUs (Confidential Performance Share Units):
+* **Logic:** Employer wants to give a target to the Employee to be completed within a deadline for a fixed bonus. If the Employer is satisfied with the target/work acheived/done by the Employee then the Employee can simply get Paid. All this happens without revealing the *Target*, *Bonus*, *Employer's Satisfaction*, 
+* **FHE Variables:** The following FHE variables and their types are used in this Smart Contract:
+                        1. eSeed ( euint64 )
+                        2. target ( euint128 )
+                        3. bonus ( euint128 )
+                        4. actualPerformance ( euint128 )
+                        5. finalPayout ( euint128 )
+                        6. employerSatisfaction ( ebool )
+                        7. isFinalized ( ebool )
 
 ### 2. Blind Board Governance
 * **Logic:** A DAO or Board votes on sensitive motions (e.g., "Fire the CEO").
