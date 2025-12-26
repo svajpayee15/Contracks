@@ -52,7 +52,7 @@ export async function sendPerformanceTransaction(iv, seed, _ipfsCID, ui){
    
        const encryptedResult = await input.encrypt();
 
-       const deadline = new Date(getVal("deadline_date"));
+       const deadline = new Date(document.querySelector(".deadline").value);
        const uinxDeadline = BigInt(Math.floor(deadline.getTime() / 1000));
    
        ui.updateStep("step-zama", "done");
