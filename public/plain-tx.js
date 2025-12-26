@@ -39,7 +39,6 @@ export async function sendPlainTransaction(iv, seed, _ipfsCID, ui) {
         //     seedInt = BigInt(hex);
         // } else {
         //     seedInt = BigInt(seed);
-        }
 
         // 3. Encrypt Seed
         const input = instance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
