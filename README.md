@@ -8,7 +8,7 @@
 
 > **"Privacy where it matters, Transparency where it counts."**
 >
-> Contracks is the world's first **Confidential CLM** platform built on Ethereum using **Zama's fhEVM**. It empowers enterprises to draft, sign, and **automatically execute** legal agreements on-chain without ever revealing sensitive business data (salaries, votes, targets) to the public.
+> Contracks is the world's first **Hybrid Confidential CLM** platform built on Ethereum (Sepolia) using **Zama's fhEVM**. It empowers enterprises to draft, sign, and **automatically execute** legal agreements on-chain without ever revealing sensitive business data (salaries, votingStategy, targets, bonuses, etc) to the public.
 >
 > We don't just encrypt data; we **compute** on it.
 
@@ -29,7 +29,7 @@
 
 ## 🌟 The Core Innovation
 
-### The Problem: The "Blockchain Privacy Paradox"
+### The Problem: The "Blockchain Privacy Paradox" that Contracks solves
 Enterprises love the automation of smart contracts but hate the transparency.
 * **HR** cannot stream salaries on-chain because everyone can see the amounts.
 * **Boards** cannot vote on-chain because live tallies influence voter behavior.
@@ -110,20 +110,20 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 
 ### 🖋️ TinyMCE Expert Editor
 * Integrated the industry-standard **TinyMCE** rich-text editor.
-* Custom plugins for "Drag-and-Drop" variable insertion (e.g., `[Insert Encrypted Salary Field]`).
+* Just enclose Dynamic Variables between {{dVar}} and Static Variables between [[sVar]]
 * Renders legal formatting (indentation, clauses, fonts) perfectly in the browser.
 
 ### 🤖 AI Assistance (Gemini 2.0)
 * **Drafting:** "Write a Non-Compete clause for a NY software engineer."
-* **Context Awareness:** The AI understands our specific `[SECRET_VAR]` syntax and drafts around it.
+* **Context Awareness:** The AI understands our specific `[[SECRET_VAR]] & {{FHE_VAR}}` syntax and drafts around it.
 
 ### 🔍 Private Summarization
-* Summarizes 50-page legal PDFs into a **3-point Risk Audit**.
+* Summarizes the legal PDFs user is indulged in, into a **3-point Risk Audit** with Google Gemini without exposing the private fields.
 * **Privacy Feature:** It highlights *where* the hidden money/variables are located in the text without needing to know the value.
 
 ### ⚡ Off-Chain Indexing
-* We run a lightweight **Node.js Indexer** that listens to Zama network events.
-* **Swift Inboxing:** When you open the app, your "Pending Signatures" load instantly from MongoDB, rather than waiting for slow blockchain RPC calls.
+* We run a lightweight **MongoDB/Node.js Indexer** that indexes the Contracts.
+* **Swift Inboxing:** When you open the app, your Contracts load instantly from MongoDB, rather than waiting for slow blockchain RPC calls.
 
 ### ✍️ eSign Feature
 * Cryptographic approval system.
@@ -131,8 +131,10 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 * This signature is verified on-chain before any FHE logic (like money movement) can begin.
 
 ### 🎨 Professional UI
-* **Enterprise-Grade Dashboard:** Clean, dark-mode interface designed for Legal and HR professionals.
+* **Enterprise-Grade Dashboard:** Clean, light-mode interface designed for Legal and HR professionals.
 * **Visual Status:** Color-coded status badges (Draft, Pending, Active, Completed).
+* **Sophisticated but Clean UI:** The data is well structured and organized.
+* **Responsive UI:** Legal work ? But away from Keyboard. No problem Contracks is Responsive but still clean. 
 
 ---
 
@@ -142,10 +144,10 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 | :--- | :--- |
 | **Privacy** | **Zama fhEVM** (Fully Homomorphic Encryption) |
 | **Contracts** | Solidity v0.8.20 |
-| **Frontend** | Vanilla JS + HTML5 (Zero-bloat) |
+| **Frontend** | Vanilla JS, HTML5 (Zero-bloat), CSS3, Ethers, RelayerSDK |
 | **Editor** | **TinyMCE** |
 | **Backend** | Node.js / Express |
-| **Database** | MongoDB (Metadata Indexing) |
+| **Database** | MongoDB Atlas (Metadata Indexing) |
 | **Storage** | IPFS (via Pinata) |
 | **AI** | **Google Gemini 2.0 Flash** |
 
