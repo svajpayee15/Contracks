@@ -20,7 +20,7 @@ const agreementSchema = new mongoose.Schema({
   status: { type: Object },
   typeOfAgreement: {
     type: String,
-    enum: ["salary", "performance", "ffp", "voting"],
+    enum: ["salary", "performance", "ffp", "voting", "plain"],
     required: true,
   },
   createdAt: { type: Date, default: Date.now() },
