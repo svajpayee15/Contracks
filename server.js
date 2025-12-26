@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const { GoogleGenAI } = require("@google/genai");
 
 // --- DATABASE & MODELS ---
-const { connectDB } = require("./database/db.js");
+const connectDB = require("./database/db.js");
 const userSchema = require("./database/models/user.schema.js");
 const agreementSchema = require("./database/models/agreement.schema.js");
 
@@ -25,7 +25,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const publicPath = path.join(__dirname, './public');
 
 // --- INITIALIZE DB ---
-connectDB;
+connectDB();
 
 // --- GLOBAL MIDDLEWARE ---
 app.use((req, res, next) => {
@@ -158,7 +158,7 @@ app.post("/login", async (req, res) => {
            .json({ success: true, user });
 
     } catch (err) {
-        console.error(err);
+        console.log(err);
         res.status(500).json({ error: "Login failed" });
     }
 });
