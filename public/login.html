@@ -99,7 +99,7 @@ async function connectWallet() {
 
         console.log("✅ User Connected:", userAddress);
 
-        const res = await fetch('http://localhost:4000/login', {
+        const res = await fetch('/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ walletAddress: userAddress, name: document.querySelector("[name=name]").value})
