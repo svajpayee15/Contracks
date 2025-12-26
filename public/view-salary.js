@@ -4,7 +4,6 @@ import { ABI } from "https://contracks.vercel.app/salary-abi.js";
 
 const CONTRACT_ADDRESS = "0xC676216cE3236CADCc4F4f7673DF6ad45Fdf7B07";
 
-const API_URL = "http://localhost:4000/api";
 
 const uiLock = document.getElementById("locker");
 const uiMsg = document.getElementById("lock-msg");
@@ -246,7 +245,7 @@ async function handleSign() {
         await tx.wait();
 
         console.log("Syncing DB...");
-        await fetch(`${API_URL}/sign-agreement`, {
+        await fetch(`/sign-agreement`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ipfsCID: currentCID, address: userAddress })
