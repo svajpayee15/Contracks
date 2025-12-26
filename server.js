@@ -104,25 +104,43 @@ app.get("/view/plain", authenticate, (req, res) => {
 app.use("/api", uploadContract);
 
 // --- B. AI Analysis (Gemini) ---
+// --- B. AI Analysis (Fireworks AI / Qwen 2.5) ---
 app.post('/api/analyze', async (req, res) => {
-    const { text, docType, query } = req.body;
+    const { text, docType, query, task } = req.body;
 
     if (!text) return res.status(400).send("No content provided.");
 
+    // 1. Setup Fireworks Config
+    const apiKey = process.env.FIREWORKS_API_KEY;
+    const apiUrl = "https://api.fireworks.ai/inference/v1/chat/completions";
+
+    if (!apiKey) {
+        console.error("❌ Missing FIREWORKS_API_KEY in .env");
+        return res.status(500).json({ error: "Server configuration error." });
+    }
+
     try {
-       const systemPrompt = `
+        // 2. Construct the "Contracks" System Prompt
+        // (Exact same logic as before, just prepared for a new model)
+        const combinedPrompt = `
             ROLE:
-            You are the "Contracks AI Assistant," a high-end legal auditor integrated into a privacy-preserving contract management platform.
+            You are the "Contracks AI Assistant," a high-end legal auditor integrated into a privacy-preserving contract management platform. 
             Your goal is to help users understand their ${docType} agreements quickly and accurately.
+            You have 3 tasks: 
+            1. To summarize 
+            2. To help user in drafting contracts
+            3. To guide user 
+
+            Perform task: ${task}
 
             TECHNICAL CONTEXT (FHE Privacy):
-            - This app uses Fully Homomorphic Encryption (FHE).
-            - Sensitive data (like exact salary, budget, or penalties) are replaced by encrypted placeholders in the source text (e.g., [SECRET_VAR_1]).
+            - This app uses Fully Homomorphic Encryption (FHE). 
+            - Sensitive data (like exact salary, budget, or penalties) are replaced by encrypted placeholders in the source text (e.g., [[SECRET_VAR_1]] & {{Variable}}).
             - If you see these placeholders, explain what they represent based on context, but do NOT try to guess the hidden values.
 
             CONSTRAINTS:
             - Answer in "Contracks Style": Professional, helpful, and very SHORT.
-            - Format your response using clean HTML.
+            - Format your response using clean HTML. 
             - Use <strong> tags for emphasis and <span style="color: #E89134;"> for key legal terms or risks.
             - Do not use <html>, <body>, or high-fi CSS. Use simple inline styles if needed.
 
@@ -135,11 +153,50 @@ app.post('/api/analyze', async (req, res) => {
             2. <strong>Key Clauses:</strong> (Bullet points with color formatting)
             3. <strong>Risk Audit:</strong> (Highlight 3 potential risks in <span style="color: #e53e3e;">red</span>)
         `;
-        const response = await ai.models.generateContent({ model: "gemini-2.0-flash", contents: systemPrompt });
 
-        res.json({ answer: response.text() });
+        // 3. Send to Fireworks AI (Qwen 2.5 VL)
+        const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                model: "accounts/fireworks/models/qwen2p5-vl-32b-instruct",
+                max_tokens: 4096, // Enough for a detailed legal analysis
+                top_p: 1,
+                top_k: 40,
+                presence_penalty: 0,
+                frequency_penalty: 0,
+                temperature: 0.1, // Low temperature for precise legal auditing
+                messages: [
+                    {
+                        role: "user",
+                        content: [
+                            { 
+                                type: "text", 
+                                text: combinedPrompt 
+                            }
+                        ]
+                    }
+                ]
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`Fireworks API Error: ${JSON.stringify(errorData)}`);
+        }
+
+        const data = await response.json();
+        const aiAnswer = data.choices[0]?.message?.content || "Analysis could not be generated.";
+
+        // 4. Send Result back to Frontend
+        res.json({ answer: aiAnswer });
+
     } catch (error) {
-        console.error("AI Error:", error);
+        console.error("AI Error:", error.message);
         res.status(500).json({ error: "AI analysis failed." });
     }
 });
