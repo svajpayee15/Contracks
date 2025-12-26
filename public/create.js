@@ -37,19 +37,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Initial View Listeners
     const main = document.getElementById("main-section");
     if (main) {
-        main.addEventListener("click", (e) => {
-            // Chat Input (Initial View)
-            if(e.target.closest(".sendPrompt")) {
-                const container = e.target.closest(".prompt-container");
-                const input = container.querySelector(".chat-input");
-                if(input && input.value) changeWorkflow(null, input.value);
-            }
-            // Quick Chips
-            if(e.target.classList.contains("chip")) {
-                const type = e.target.getAttribute("data-type");
-                changeWorkflow(type);
-            }
-        });
+        let type = null
+        document.querySelectorAll(".chip").forEach((element)=>{
+            element.addEventListener("click",(e)=>{
+                document.querySelectorAll(".chip").forEach((button)=>{
+                    button.style.background = "white"
+                })
+                e.target.style.background = "#dcb"
+                type = e.target.getAttribute("data-type")
+                console.log(type)
+                document.querySelector(".sendPrompt").addEventListener("click", (e) => {
+                        const container = document.querySelector(".prompt-container");
+                        const input = container.querySelector(".chat-input");
+                        console.log(type)
+                        
+                        changeWorkflow(type, input.value);
+                });
+        })
+
+            
+        })
     }
 });
 
@@ -427,7 +434,7 @@ function getEditorHTML(type, prompt) {
             </div>
 
             <div class="prompt-container" style="width:100%; margin-top:auto; min-height:auto; padding:4px; border:1px solid #eee; box-shadow:0 -5px 15px rgba(0,0,0,0.02); background:#fff; flex-shrink:0; display:flex; flex-direction:column; gap:10px; border-radius:12px;">
-                <textarea id="ai-main-input" class="chat-input" placeholder="Ask AI..." style="font-size:0.9rem; width:100%; padding:8px; border:0px solid #eee; border-radius:8px; resize:none; height:50px; font-family:inherit;"></textarea>
+                <textarea id="ai-main-input" class="chat-input" placeholder="Ask AI..." style="font-size:0.9rem; width:100%; padding:8px; border:0px solid #eee; border-radius:8px; resize:none; height:50px; font-family:inherit;">${prompt}</textarea>
                 
                 <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
                     <div style="display:flex; gap:5px;">
