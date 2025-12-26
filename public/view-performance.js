@@ -1,5 +1,5 @@
-import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/public/crypto.js";
-import { ABI } from "https://contracks.vercel.app/public/performance-abi.js";
+import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/crypto.js";
+import { ABI } from "https://contracks.vercel.app/performance-abi.js";
 
 const CONTRACT_ADDRESS = "0x95E96dC42Dd16788ab9D3d1FF941498D8b5B4B21";
 const ZAMA_CONFIG = {
