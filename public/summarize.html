@@ -218,6 +218,8 @@
                 const seedHandle = agreement.eSeed;
                 const iv = agreement.iv || agreement[2];
 
+                console.log(config)
+
                 const startTimeStamp = Math.floor(Date.now() / 1000).toString();
                 const keypair = instance.generateKeypair();
                 const eip712 = instance.createEIP712(keypair.publicKey, [config.address], startTimeStamp, '10');
