@@ -106,6 +106,7 @@ async function connectWallet() {
         });
 
         const data = await res.json();
+        console.log(data)
 
         if (data.success) {
             // 4. Save Session & Redirect
