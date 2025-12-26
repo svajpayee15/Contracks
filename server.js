@@ -22,7 +22,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 // --- DEFINE PATHS ---
 // This points to the "public" folder at the root of your project
-const publicPath = path.join(__dirname, '../../public');
+const publicPath = path.join(__dirname, './public');
 
 // --- INITIALIZE DB ---
 connectDB;
