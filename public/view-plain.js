@@ -1,15 +1,9 @@
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
 import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/crypto.js";
-
+const { ABI } from "https://contracks.vercel.app/plain-abi.js"
 // ⚠️ REPLACE WITH YOUR DEPLOYED PLAIN AGREEMENT ADDRESS
 const CONTRACT_ADDRESS = "0x02f397462F05CCEf87F3ED51793B4b7bB9524A49"; 
-
-// ABI Extraction for the PlainAgreement Contract
-const ABI = [
-    "function agreements(string) view returns (address, string, string, uint256, bool, address)",
-    "function signAgreement(string _cid) public",
-    "event AgreementSigned(string indexed cid, address signer)"
-];
+;
 
 const ZAMA_CONFIG = {
     aclContractAddress: "0xf0Ffdc93b7E186bC2f8CB3dAA75D86d1930A433D",
