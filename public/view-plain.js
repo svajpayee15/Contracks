@@ -1,5 +1,5 @@
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
-import { deriveKeyFromSeed, decryptFile } from "./crypto.js";
+import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/crypto.js";
 
 // ⚠️ REPLACE WITH YOUR DEPLOYED PLAIN AGREEMENT ADDRESS
 const CONTRACT_ADDRESS = "0x02f397462F05CCEf87F3ED51793B4b7bB9524A49"; 
