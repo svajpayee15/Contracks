@@ -225,7 +225,18 @@
                 const eip712 = instance.createEIP712(keypair.publicKey, [config.address], startTimeStamp, '10');
                 const signature = await signer.signTypedData(eip712.domain, { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification }, eip712.message);
                 
-                const decrypted = await instance.userDecrypt([{ handle: seedHandle, contractAddress: config.address }], keypair.privateKey, keypair.publicKey, signature.replace("0x",""), [config.address], userAddress, startTimeStamp, '10');
+                console.log(userAddress)
+                
+                const decrypted = await instance.userDecrypt(
+                    [{ handle: seedHandle, contractAddress: config.address }], 
+                    keypair.privateKey, 
+                    keypair.publicKey, 
+                    signature.replace("0x",""), 
+                    [config.address], 
+                    userAddress, 
+                    startTimeStamp, 
+                    '10'
+                );
 
                 const res = await fetch(`https://gateway.pinata.cloud/ipfs/${cid}`);
                 const json = await res.json();
