@@ -1,12 +1,7 @@
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
-
+import {ABI} from "https://contracks.vercel.app/plain-abi.js"
 const CONTRACT_ADDRESS = "0x02f397462F05CCEf87F3ED51793B4b7bB9524A49"; 
 
-const ABI = [
-    "function initialize(address _receiver, string _ipfsCID, string _iv, bytes _seed, bytes _inputProof) public",
-    "function signAgreement(string _cid) public",
-    "function agreements(string) view returns (address, string, string, uint256, bool, address)"
-];
 
 export async function sendPlainTransaction(iv, seed, _ipfsCID, ui) {
     if (!window.ethereum) return ui.error("Install Metamask");
@@ -37,18 +32,19 @@ export async function sendPlainTransaction(iv, seed, _ipfsCID, ui) {
 
         // 2. Prepare Seed for FHE (Convert Uint8Array to BigInt 64-bit)
         // We take the first 8 bytes of the AES seed to store on-chain as the 'master key' ref
-        let seedInt;
-        if (seed instanceof Uint8Array) {
-            // Hex string from first 8 bytes
-            const hex = "0x" + Array.from(seed.slice(0, 8)).map(b => b.toString(16).padStart(2, '0')).join('');
-            seedInt = BigInt(hex);
-        } else {
-            seedInt = BigInt(seed);
+        // let seedInt;
+        // if (seed instanceof Uint8Array) {
+        //     // Hex string from first 8 bytes
+        //     const hex = "0x" + Array.from(seed.slice(0, 8)).map(b => b.toString(16).padStart(2, '0')).join('');
+        //     seedInt = BigInt(hex);
+        // } else {
+        //     seedInt = BigInt(seed);
         }
 
         // 3. Encrypt Seed
         const input = instance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
-        input.add64(seedInt); 
+        // input.add64(seedInt); 
+        input.add64(seed); 
         const encrypted = await input.encrypt();
 
         ui.updateStep("step-zama", "done");
