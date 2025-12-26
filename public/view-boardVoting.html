@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board Voting | Contracks</title>
+    
+     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
+    <script src="https://cdn.tiny.cloud/1/4f18ubuuhi7d98321bdi8y78zntfzd4vbyqjp35bcodio8lb/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <script src="https://cdn.zama.org/relayer-sdk-js/0.3.0-8/relayer-sdk-js.umd.cjs"></script>
+
+    <style>
+        :root {
+            --sidebar-bg: #2b2424; --main-bg: #FDFBF7; --accent: #E89134; 
+            --text-main: #1A1A1A; --success: #27ae60; --danger: #e74c3c; --border: #e2e8f0;
+        }
+
+        * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'DM Sans', sans-serif; outline: none; }
+        body { overflow: hidden; background: var(--main-bg); width: 100vw; height: 100vh; display: grid; grid-template-columns: 16vw 84vw; }
+
+        /* --- SIDEBAR --- */
+        aside {
+            background-color: var(--sidebar-bg); color: white;
+            height: 100%; padding: 3vh 1.5vw;
+            display: flex; flex-direction: column; gap: 4vh;
+            transition: transform 0.3s ease; z-index: 2000;
+        }
+        .user-profile { display: flex; align-items: center; gap: 1vw; height: 6%; }
+        .avatar { width: 2.5vw; height: 2.5vw; min-width: 35px; min-height: 35px; border-radius: 50%; background-color: #dcb; }
+        .user-info { display: flex; flex-direction: column; }
+        .name { font-weight: 500; font-size: 0.9rem; white-space: nowrap; }
+        .menu { display: flex; flex-direction: column; gap: 1vh; }
+        .menu-item {
+            text-decoration: none; color: #9A9A9A; padding: 1.2vh 1vw;
+            border-radius: 12px; display: flex; align-items: center; gap: 0.8vw;
+            font-size: 0.95rem; transition: 0.2s;
+        }
+        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .menu-item.active { background: linear-gradient(145deg, #4a3e3e, #3e3333); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+        /* --- MAIN AREA --- */
+        main { height: 100vh; width: 100%; overflow: hidden; }
+        .split-layout { display: grid; grid-template-columns: 380px 1fr; height: 100vh; overflow: hidden; }
+
+        /* --- CONTROL PANEL --- */
+        .controls-panel {
+            background: #FDFBF7; border-right: 1px solid var(--border);
+            padding: 30px; display: flex; flex-direction: column; gap: 25px; 
+            height: 100vh; overflow-y: auto;
+        }
+        .section-title { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 10px; }
+        .control-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; border-style: dashed; border-color: orange; box-shadow: 0 2px 4px rgba(0,0,0,0.02); position: relative; }
+
+        /* Voting Buttons */
+        .vote-btn-group { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-vote { flex: 1; padding: 15px; border-radius: 8px; border: 1px solid #ddd; background: white; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-yes:hover { background: #dcfce7; border-color: var(--success); color: var(--success); }
+        .btn-no:hover { background: #fee2e2; border-color: var(--danger); color: var(--danger); }
+
+        /* Progress Bar */
+        .progress-track { height: 10px; background: #eee; border-radius: 5px; overflow: hidden; margin-top: 15px; }
+        .progress-fill { height: 100%; background: var(--success); width: 0%; transition: width 1s ease; }
+
+        /* --- VIEWER --- */
+        .doc-viewer { background-color: #f3f3f3; padding: 40px; height: 100vh; overflow-y: auto; display: flex; justify-content: center; }
+        .paper-sheet { width: 100%; max-width: 850px; min-height: 1100px; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.08); position: relative; margin-bottom: 50px; flex-shrink: 0; }
+        .locker { position: absolute; inset: 0; background: rgba(255,255,255,0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; text-align: center; }
+
+        .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        
+        /* Status Dot */
+        .status-dot { position: absolute; top: 15px; right: 15px; width: 12px; height: 12px; border-radius: 50%; }
+        .dot-active { background: var(--success); box-shadow: 0 0 0 2px #dcfce7; }
+        .dot-closed { background: var(--danger); box-shadow: 0 0 0 2px #fee2e2; }
+
+        /* --- MOBILE UI ELEMENTS --- */
+        .menu-toggle {
+            display: none; position: fixed; top: 15px; left: 15px;
+            z-index: 2100; background: var(--accent); color: white;
+            border: none; border-radius: 8px; width: 45px; height: 45px;
+            cursor: pointer; align-items: center; justify-content: center;
+        }
+        .sidebar-close {
+            display: none; position: absolute; top: 20px; right: 20px;
+            background: transparent; color: white; border: none; font-size: 2rem; cursor: pointer;
+        }
+        .mobile-tabs {
+            display: none; width: 100%; background: #fff; border-bottom: 1px solid #ddd;
+            padding: 10px; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 500;
+        }
+        .m-tab { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #eee; background: #f9f9f9; font-weight: 600; font-size: 0.85rem; }
+        .m-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* =========================================
+           📱 RESPONSIVE LOGIC
+           ========================================= */
+        @media (max-width: 1024px) {
+            body { grid-template-columns: 1fr; }
+            aside { position: fixed; top: 0; left: -100%; width: 280px; transition: left 0.3s ease; }
+            aside.active { left: 0; }
+            .menu-toggle { display: flex; }
+            .sidebar-close { display: block; }
+            .mobile-tabs { display: flex; margin-top: 0; padding-top: 70px; }
+            .split-layout { display: block; width: 100vw; height: calc(100vh - 120px); }
+            .controls-panel { width: 100%; height: 100%; border-right: none; display: block; }
+            .doc-viewer { width: 100%; height: 100%; display: none; padding: 10px;}
+            .show-doc .controls-panel { display: none; }
+            .show-doc .doc-viewer { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="menu-toggle" class="menu-toggle">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <aside id="sidebar">
+        <button id="sidebar-close" class="sidebar-close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info"><span class="name" id="sidebar-wallet">Connecting...</span></div>
+        </div>
+        <nav class="menu">
+              <a href="/create" class="menu-item"><span class="material-symbols-outlined">add_circle</span> Create</a>
+            <a href="/summarize" class="menu-item active"><span class="material-symbols-outlined">psychology</span> Simplify</a>
+            <a href="/inbox" class="menu-item"><span class="material-symbols-outlined">inbox</span> Inbox</a>
+        </nav>
+    </aside>
+
+    <main id="main-container">
+        <div class="mobile-tabs">
+            <button class="m-tab active" id="tab-controls">Voting Stats</button>
+            <button class="m-tab" id="tab-doc">Resolution Text</button>
+        </div>
+
+        <div class="split-layout" id="split-layout">
+            <div class="controls-panel">
+                <div id="role-badge">CHECKING ACCESS...</div>
+
+                <div class="panel-section">
+                    <h3 class="section-title">Session Details</h3>
+                    <div class="control-card">
+                        <div id="status-dot" class="status-dot dot-active"></div>
+                        <div style="font-size:0.85rem; color:#888; font-weight:bold; margin-bottom:5px;">DEADLINE</div>
+                        <div id="deadline-display" style="font-size:1.1rem; font-weight:bold; color:var(--text-main);">...</div>
+                        <div id="timer-display" style="font-size:0.8rem; margin-top:5px; color:var(--success); font-weight:bold;">Active</div>
+                    </div>
+                </div>
+
+                <div id="voting-section" style="display:none;">
+                    <div class="panel-section">
+                        <h3 class="section-title">Your Vote</h3>
+                        <div class="control-card">
+                            <div style="display:flex; justify-content:space-between; font-size:0.9rem;">
+                                <span>Voting Weight:</span>
+                                <span id="user-weight" style="font-weight:bold; color:var(--accent);">0</span>
+                            </div>
+                            <div class="vote-btn-group">
+                                <button class="btn-vote btn-yes" onclick="window.handleVote(true)">YES</button>
+                                <button class="btn-vote btn-no" onclick="window.handleVote(false)">NO</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="result-section" style="display:none;">
+                    <div class="panel-section">
+                        <h3 class="section-title">Final Outcome</h3>
+                        <div class="control-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:0.9rem; font-weight:bold; color:#555;">Approval Rate</span>
+                                <span id="percent-display" style="font-size:1.2rem; font-weight:bold; color:var(--text-main);">0%</span>
+                            </div>
+                            <div class="progress-track">
+                                <div id="result-bar" class="progress-fill"></div>
+                            </div>
+                            <div style="margin-top:10px; font-size:0.8rem; color:#666; display:flex; justify-content:space-between;">
+                                <span id="yes-votes-display">0 Yes Votes</span>
+                                <span id="total-possible-display">Total Weight: 0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-section" style="display:none;">
+                    <div class="panel-section">
+                        <h3 class="section-title">Admin Controls</h3>
+                        <button id="finalizeBtn" class="btn-primary" style="background:#333;">Finalize & Decrypt Results</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-viewer" id="doc-ui">
+                <div class="paper-sheet">
+                    <textarea id="contract-editor"></textarea>
+                    <div id="locker" class="locker">
+                        <span class="material-symbols-outlined" style="font-size:48px; color:#ddd; margin-bottom:15px;">encrypted</span>
+                        <h3 style="margin-bottom:10px;">Board Resolution</h3>
+                        <p style="margin-bottom:20px; color:#666;">Content is encrypted via Zama KMS</p>
+                        <button class="btn-primary" id="btn-decrypt" style="width:200px;">Authorize Access</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
+        import { deriveKeyFromSeed, decryptFile } from "http://localhost:4000/crypto.js";
+        import { ABI } from "http://localhost:4000/boardVoting-abi.js";
+        import { ui } from "http://localhost:4000/ui-utils.js";
+
+        // --- 🍔 MOBILE INTERFACE LOGIC ---
+        const toggleBtn = document.getElementById("menu-toggle");
+        const closeBtn = document.getElementById("sidebar-close");
+        const sidebar = document.getElementById("sidebar");
+        const tabControls = document.getElementById("tab-controls");
+        const tabDoc = document.getElementById("tab-doc");
+        const splitLayout = document.getElementById("split-layout");
+
+        toggleBtn.onclick = () => { sidebar.classList.add("active"); toggleBtn.style.display = "none"; };
+        closeBtn.onclick = () => { sidebar.classList.remove("active"); toggleBtn.style.display = "flex"; };
+        
+        tabControls.onclick = () => {
+            tabControls.classList.add("active"); tabDoc.classList.remove("active");
+            splitLayout.classList.remove("show-doc");
+        };
+        tabDoc.onclick = () => {
+            tabDoc.classList.add("active"); tabControls.classList.remove("active");
+            splitLayout.classList.add("show-doc");
+        };
+
+        // --- CORE LOGIC (PRESERVED) ---
+        const CONTRACT_ADDRESS = "0x093Ce64c121d51FC03d71C25B715E7C1E4374C53"; 
+        const ZAMA_CONFIG = {
+              aclContractAddress: "0xf0Ffdc93b7E186bC2f8CB3dAA75D86d1930A433D",
+              kmsContractAddress: "0xbE0E383937d564D7FF0BC3b46c51f0bF8d5C311A",
+              inputVerifierContractAddress: "0xBBC1fFCdc7C316aAAd72E807D9b0272BE8F84DA0",
+              verifyingContractAddressDecryption: "0x5D8BD78e2ea6bbE41f26dFe9fdaEAa349e077478",
+              verifyingContractAddressInputVerification: "0x483b9dE06E4E4C7D35CCf5837A1668487406D955",
+              chainId: 11155111, gatewayChainId: 10901, network: window.ethereum, relayerUrl: "https://relayer.testnet.zama.org",
+        };
+
+        let contract, signer, userAddress, currentCID, instance;
+        let voteData = {};
+
+        async function init() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                currentCID = urlParams.get('cid');
+                if (!currentCID) throw new Error("No CID in URL");
+
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = await provider.getSigner();
+                userAddress = await signer.getAddress();
+                contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+                document.getElementById("sidebar-wallet").innerText = userAddress.slice(0,6)+"..."+userAddress.slice(-4);
+
+                tinymce.init({ 
+                    selector: '#contract-editor', readonly: true, menubar: false, toolbar: false, height: '100%',
+                    content_style: "body { font-family: 'DM Sans', sans-serif; padding: 20px; color: #333; }" 
+                });
+
+                const Zama = window.relayerSDK;
+                await Zama.initSDK();
+                instance = await Zama.createInstance(ZAMA_CONFIG);
+
+                await fetchSessionData();
+
+                document.getElementById("btn-decrypt").onclick = loadDoc;
+                document.getElementById("finalizeBtn").onclick = finalizeSession;
+            } catch (e) { console.error(e); }
+        }
+
+        async function fetchSessionData() {
+            const v = await contract.votingAgreements(currentCID);
+            voteData = { admin: v[0], iv: v[2], deadline: Number(v[3]), seed: v[4], totalPossible: Number(v[6]), isDecryptionRequested: v[7], isFinalized: v[8] };
+
+            const deadlineDate = new Date(voteData.deadline * 1000);
+            document.getElementById("deadline-display").innerText = deadlineDate.toLocaleDateString();
+            const now = Math.floor(Date.now() / 1000);
+            const isExpired = now > voteData.deadline;
+
+            if (voteData.isFinalized) {
+                document.getElementById("status-dot").className = "status-dot dot-closed";
+                document.getElementById("timer-display").innerText = "Result Finalized";
+            } else if (isExpired) {
+                document.getElementById("status-dot").className = "status-dot dot-closed";
+                document.getElementById("timer-display").innerText = "Session Closed";
+            }
+
+            const status = await contract.getVoterStatus(currentCID, userAddress);
+            const isWhitelisted = status[0];
+            const weight = Number(status[1]);
+            const hasVoted = status[2];
+            const isAdmin = userAddress.toLowerCase() === voteData.admin.toLowerCase();
+            const badge = document.getElementById("role-badge");
+
+            if (isAdmin) badge.innerText = "ADMIN (CHAIRPERSON)";
+            else if (isWhitelisted) badge.innerText = "ACCESS: BOARD MEMBER";
+            else badge.innerText = "OBSERVER";
+
+            if (voteData.isFinalized) {
+                document.getElementById("result-section").style.display = "block";
+                const filter = contract.filters.statusFinalized(currentCID);
+                const events = await contract.queryFilter(filter);
+                if (events.length > 0) {
+                    const passed = events[0].args[1]; 
+                    document.getElementById("percent-display").innerText = passed ? "APPROVED" : "REJECTED";
+                    document.getElementById("percent-display").style.color = passed ? "var(--success)" : "var(--danger)";
+                    document.getElementById("result-bar").style.width = "100%";
+                    document.getElementById("result-bar").style.background = passed ? "var(--success)" : "var(--danger)";
+                }
+                return;
+            }
+
+            if (isWhitelisted && !isExpired) {
+                document.getElementById("voting-section").style.display = "block";
+                document.getElementById("user-weight").innerText = weight;
+                if (hasVoted) document.getElementById("voting-section").innerHTML = `<div class="control-card" style="text-align:center; color:var(--success);"><span class="material-symbols-outlined" style="font-size:32px;">check_circle</span><br>Vote Submitted</div>`;
+            }
+
+            if (isAdmin) {
+                document.getElementById("admin-section").style.display = "block";
+                const btn = document.getElementById("finalizeBtn");
+                if (!isExpired) { btn.innerText = "Voting In Progress..."; btn.disabled = true; btn.style.opacity = "0.5"; }
+                else { btn.disabled = false; btn.innerText = "Finalize & Decrypt Results"; }
+            }
+        }
+
+        window.handleVote = async (choice) => {
+            try {
+                if(!confirm(`Confirm vote: ${choice ? 'YES' : 'NO'}?`)) return;
+                const input = instance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
+                input.addBool(choice);
+                const ciphertexts = await input.encrypt();
+                const tx = await contract.castVote(currentCID, ciphertexts.handles[0], ciphertexts.inputProof);
+                await tx.wait();
+                location.reload();
+            } catch(e) { alert(e.message); }
+        };
+
+        async function finalizeSession() {
+            const btn = document.getElementById("finalizeBtn");
+            try {
+                if (!voteData.isDecryptionRequested) {
+                    const tx = await contract.finalizeVoting(currentCID);
+                    await tx.wait();
+                    await new Promise(r => setTimeout(r, 5000));
+                }
+                const filter = contract.filters.requestVotingResult(currentCID);
+                const events = await contract.queryFilter(filter, 0, "latest");
+                const isPassedHandle = String(events[events.length - 1].args[1]);
+                const results = await instance.publicDecrypt([isPassedHandle]);
+                const tx2 = await contract.completeFinalization(currentCID, results.clearValues[isPassedHandle], "0x" + results.decryptionProof);
+                await tx2.wait();
+                location.reload();
+            } catch(e) { alert(e.message); }
+        }
+
+        async function loadDoc() {
+            try {
+                const res = await fetch(`https://gateway.pinata.cloud/ipfs/${currentCID}`);
+                const json = await res.json();
+                const keypair = instance.generateKeypair();
+                const startTime = Math.floor(Date.now()/1000).toString();
+                const eip712 = instance.createEIP712(keypair.publicKey, [CONTRACT_ADDRESS], startTime, '10');
+                const signature = await signer.signTypedData(eip712.domain, { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification }, eip712.message);
+                const decrypted = await instance.userDecrypt([{ handle: voteData.seed, contractAddress: CONTRACT_ADDRESS }], keypair.privateKey, keypair.publicKey, signature.replace("0x", ""), [CONTRACT_ADDRESS], userAddress, startTime, '10');
+                const aesKey = await deriveKeyFromSeed(decrypted[voteData.seed]);
+                const html = await decryptFile(json.content.contractText, aesKey, voteData.iv);
+                tinymce.get("contract-editor").setContent(html);
+                document.getElementById("locker").style.display = "none";
+            } catch(e) { alert("Authorization Failed."); }
+        }
+
+        init();
+    </script>
+</body>
+</html>

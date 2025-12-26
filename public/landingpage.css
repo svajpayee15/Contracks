@@ -1,0 +1,351 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+body{
+    background-color: rgb(255, 254, 254);
+    overflow-x: hidden;
+}
+/* Hero Section */
+#hero-section{
+    height:100vh;
+    width:100vh;
+    overflow: hidden;
+}
+.background-video{
+    position: absolute;
+    height:100%;
+    width:100%;
+    background-color:rgb(248, 244, 241);
+}
+.background-video video{
+    height:100%;
+    width:100%;
+    /* left:10vw; */
+    /* position: relative; */
+    /* justify-self: right; */
+    object-fit: cover;
+}
+
+
+.content{
+    position:relative;
+    height:100vh;
+    width:100vw;
+    /* background-color: blue; */
+    padding-left: 2vw;
+    display: flex;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.main-content{
+    height:max-content;
+    width: max-content;
+    display: grid;
+    gap:3.5vh;
+    /* background-color: aquamarine; */
+}
+.content .heading-text p{
+    font-size: 3rem;
+    font-weight: 100;
+    margin:-10px 0px;
+}
+.content .heading-text{
+    /* background-color: red; */
+    width: max-content;
+    display: grid;
+    gap:0vh;
+}
+.small-text{
+    width:75%;
+}
+.buttons button{
+    height:6.5vh;
+    width:8vw;
+    border-radius: 8px;
+    border:0px;
+    color:white;
+    font-weight:700;
+    filter: drop-shadow(0px 3.5px 20.73px rgba(168, 82, 5, 0.3));
+    margin-bottom: 1vh;
+}
+
+
+/* Section 2 */
+
+#section-2{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width:100vw;
+}
+
+#section-2 .welcome{
+    display: grid;
+    color:rgba(63, 36, 7, 1);
+    font-weight: bold;
+    line-height: 25px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    /* background-color: antiquewhite; */
+    justify-content: center;
+    align-items: center;
+    width:35vw;
+    height: fit-content;
+    text-align: center;
+}
+#section-2 .welcome img{
+    position: absolute;
+    height:13.5vh;
+    justify-self: center;
+}
+#section-2 .welcome div{
+    position: relative;
+}
+#section-2 .stats {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    width:100vw;
+}
+#section-2 .stats ul{
+    display: flex;
+    justify-content: center;
+    gap:15vw;
+    list-style: none;
+    color:rgba(63, 36, 7, 1);
+    font-weight: bold;
+    font-size: smaller;
+
+}
+#section-2 .stats ul li h1{
+    font-weight: 600;
+    font-size: 8rem;
+    /* color:#E0822D; */
+     background-image: linear-gradient(to right, #E0822D, #893027);
+    background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Section 3 */
+#section-3{
+    width:100vw;
+    display: grid;
+    justify-content: center;
+    margin-top:20vh;
+    gap:10vh;
+    position: relative;
+}
+
+#section-3 .text{
+    text-align: center;
+    gap:3vh;
+    display: grid;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+#section-3 .text h1{
+      background-image: linear-gradient(to right,#c06313 , #E0822D, #c3620c);
+    background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 3rem;
+}
+#section-3 .text p {
+    color:rgba(63, 36, 7, 1);
+    font-weight: bold;
+    font-size: medium;
+}
+
+#section-3 .bento-grid{
+    height:130vh;
+    width:80vw;
+    right:0.4vw;
+    position: relative;
+    display: grid;
+    gap:1.5%;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    grid-template-rows: 49.25% 49.25%;
+
+}
+#section-3 .bento-grid .upper{
+    list-style: none;
+    display: grid;
+    gap:1.2%;
+    grid-template-columns: 49.4% 49.4%;
+}
+#section-3 .bento-grid .lower{
+    list-style: none;
+    display:grid;
+    gap:1.2%;
+    grid-template-columns: 34.4% 64.4%;
+}
+#section-3 .bento-grid ul li{
+    border-radius: 15px;
+   
+    background-image: linear-gradient(to bottom, antiquewhite, rgb(251, 228, 225));
+}
+#section-3 .bento-grid ul li .text-column{
+    /* padding-top:5vh; */
+    /* width:30%; */
+    /* padding-left: 5vw; */
+}
+.grid-1,.grid-2,.grid-4{
+ display: grid;
+ padding: 3% 0vw;
+ grid-template-columns: 55% 45%;
+ /* gap:5vw; */
+}
+.grid-1 .text-column-grid, .grid-2 .text-column-grid, .grid-4 .text-column-grid{
+    padding-top: 2%;
+}
+.grid div{
+    display: flex;
+    gap:3%;
+        color:rgba(63, 36, 7, 1);
+    flex-direction: column;
+    align-items: center;
+}
+.grid div h2{
+    width:80%;
+}
+.grid div p{
+    width:80%;
+}
+.grid-4{
+    padding-bottom: 0vh;
+}
+
+.grid-3{
+            color:rgba(63, 36, 7, 1);
+
+    display: grid;
+    grid-template-rows: 50% 50%;
+    padding: 0% 4%;
+    /* justify-content: center; */
+}
+.grid-3 div{
+    display: flex;
+    flex-direction: column;
+    gap:5%;
+    align-items: center;
+    /* background-color: #893027; */
+}
+.grid-3 .text-column-grid{
+    padding: 10% 5% 0% 5%;
+    /* background-color: #893027; */
+}
+
+/* Section-4 */
+
+#section-4{
+    display: grid;
+    justify-content: center;
+    margin-top:20vh;
+    margin-bottom: 40vh;
+}
+#section-4 .main-layout{
+    /* background-color: red; */
+    height:70vh;
+    width:80vw;
+    display: grid;
+    grid-template-rows: 62.5% 55%;
+}
+
+#section-4 .info .design{
+    position: absolute;
+}
+#section-4 .info .text{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+#section-4 .info .text h1{
+    text-align: center;
+    width: 75%;
+     background-image: linear-gradient(to right, #E0822D, #893027);
+    background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size: 3rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+#section-4 .info .text .options{
+    width:50%;
+    margin-top: 5vh;
+    height:6vh;    
+    background-color: rgb(255, 229, 208);
+    display: grid;
+    grid-template-columns: 15% 24% 19% 16% 14%;
+    align-items: center;
+    list-style: none;
+    border-radius: 30px;
+    gap:3%;
+    padding:7px 9px;
+}
+#section-4 .info .text .options li{
+    background-color:rgb(252, 249, 244);
+    height:100%;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: medium;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.options li p{
+      background-image: linear-gradient(to right, #E0822D, #893027);
+    background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+#section-4 .main-layout .box{
+    position: relative;
+    display: flex;
+    padding:3vh 0vw 5vh 2vw;
+    border-radius: 20px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-image: linear-gradient(to right, #E0822D, antiquewhite, #E0822D)
+}
+#section-4 .main-layout .box ul li div h1{
+    color: #893027;
+}
+#section-4 .main-layout .box ul li div p{ 
+    color: white;
+    font-weight: 600;
+    font-size: medium;
+    width:80%;
+    margin-top: 5%;
+}
+#section-4 .main-layout .box ul li div{ 
+    width:55%;
+}
+#section-4 .main-layout .box ul li button{ 
+    height:26%;
+    width:25%;
+    border-radius: 28px;
+    background: #fff;
+    outline: 0px;
+    border:0px;
+}
+#section-4 .main-layout .box ul li button p{ 
+    background-image: linear-gradient(to right, #E0822D, #893027);
+    background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  font-size:120%;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+footer{
+    height:120vh;
+    width:100vw;
+    background-size: cover;
+    background-image: url(Simplify\ 1.png);
+}

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Performance Agreement | Contracks</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
+    <script src="https://cdn.tiny.cloud/1/4f18ubuuhi7d98321bdi8y78zntfzd4vbyqjp35bcodio8lb/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.11.1/ethers.umd.min.js"></script>
+    <script src="https://cdn.zama.org/relayer-sdk-js/0.3.0-8/relayer-sdk-js.umd.cjs"></script>
+
+    <style>
+        :root {
+            --sidebar-bg: #2b2424; 
+            --main-bg: #FDFBF7;   
+            --accent: #E89134;     
+            --text-main: #1A1A1A;
+            --success: #27ae60;
+        }
+
+        * { padding: 0; margin: 0; box-sizing: border-box; font-family: 'DM Sans', sans-serif; outline: none; }
+
+        /* --- LAYOUT --- */
+        body {
+            width: 100vw; height: 100vh;
+            display: grid; grid-template-columns: 16vw 84vw;
+            overflow: hidden; background-color: #FDFBF7;
+        }
+
+        /* --- SIDEBAR --- */
+        aside {
+            background-color: var(--sidebar-bg); color: white;
+            height: 100%; padding: 3vh 1.5vw;
+            display: flex; flex-direction: column; gap: 4vh;
+            transition: transform 0.3s ease;
+            z-index: 2000;
+        }
+        .user-profile { display: flex; align-items: center; gap: 1vw; height: 6%; }
+        .avatar { width: 2.5vw; height: 2.5vw; min-width: 35px; min-height: 35px; border-radius: 50%; background-color: #dcb; }
+        .user-info { display: flex; flex-direction: column; }
+        .name { font-weight: 500; font-size: 0.9rem; white-space: nowrap; }
+        .menu { display: flex; flex-direction: column; gap: 1vh; }
+        .menu-item {
+            text-decoration: none; color: #9A9A9A; padding: 1.2vh 1vw;
+            border-radius: 12px; display: flex; align-items: center; gap: 0.8vw;
+            font-size: 0.95rem; transition: 0.2s;
+        }
+        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+
+        /* --- MAIN AREA --- */
+        main { height: 100vh; width: 100%; overflow: hidden; }
+
+        .split-layout { 
+            display: grid; grid-template-columns: 380px 1fr; 
+            height: 100vh; overflow: hidden; 
+        }
+
+        .controls-panel {
+            background: #FDFBF7; border-right: 1px solid #ddd;
+            padding: 30px; display: flex; flex-direction: column; 
+            gap: 25px; height: 100vh; overflow-y: auto; 
+        }
+
+        .control-card { background: white; border: 1px solid #eee; border-radius: 12px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .section-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #888; letter-spacing: 1px; margin-bottom: 15px; }
+
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: 0.2s; margin-top: 10px; }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-outline { background: transparent; border: 1px solid #ddd; color: #333; }
+
+        .doc-viewer { 
+            background-color: #4e4d4c1b; padding: 20px; height: 100vh;
+            overflow-y: scroll; display: flex; justify-content: center; align-items: flex-start;
+        }
+        .paper-sheet { 
+            width: 100%; max-width: 850px; min-height: 1100px;
+            background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            position: relative; margin-bottom: 60px; flex-shrink: 0;
+        }
+
+        .locker { position: absolute; inset: 0; background: rgba(255,255,255,0.98); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 100; text-align: center; padding: 20px; }
+
+        /* --- MOBILE UI ELEMENTS --- */
+        .menu-toggle {
+            display: none; position: fixed; top: 15px; left: 15px;
+            z-index: 2100; background: var(--accent); color: white;
+            border: none; border-radius: 8px; width: 45px; height: 45px;
+            cursor: pointer; align-items: center; justify-content: center;
+        }
+        .sidebar-close {
+            display: none; position: absolute; top: 20px; right: 20px;
+            background: transparent; color: white; border: none; font-size: 2rem; cursor: pointer;
+        }
+        /* Mobile Tab Switcher (Hidden on Desktop) */
+        .mobile-tabs {
+            display: none; width: 100%; background: #fff; border-bottom: 1px solid #ddd;
+            padding: 10px; justify-content: center; gap: 10px; position: sticky; top: 0; z-index: 500;
+        }
+        .m-tab { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #eee; background: #f9f9f9; font-weight: 600; font-size: 0.85rem; }
+        .m-tab.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* =========================================
+           📱 RESPONSIVE LOGIC
+           ========================================= */
+        @media (max-width: 1024px) {
+            body { grid-template-columns: 1fr; }
+            
+            aside {
+                position: fixed; top: 0; left: -100%; width: 280px;
+                transition: left 0.3s ease;
+            }
+            aside.active { left: 0; }
+            
+            .menu-toggle { display: flex; }
+            .sidebar-close { display: block; }
+
+            /* Tab System for Mobile */
+            .mobile-tabs { display: flex; margin-top: 60px; }
+
+            .split-layout {
+                display: block; width: 100vw; height: calc(100vh - 120px);
+            }
+
+            .controls-panel {
+                width: 100%; height: 100%; border-right: none;
+                display: block; /* Shown by default */
+            }
+
+            .doc-viewer {
+                width: 100%; height: 100%; 
+                display: none; /* Hidden by default */
+            }
+
+            /* View states */
+            .show-doc .controls-panel { display: none; }
+            .show-doc .doc-viewer { display: flex; }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="menu-toggle" class="menu-toggle">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <aside id="sidebar">
+        <button id="sidebar-close" class="sidebar-close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info"><span class="name" id="sidebar-wallet">Connecting...</span></div>
+        </div>
+        <nav class="menu">
+         <a href="/create" class="menu-item"><span class="material-symbols-outlined">add_circle</span> Create</a>
+            <a href="/summarize" class="menu-item active"><span class="material-symbols-outlined">psychology</span> Simplify</a>
+            <a href="/inbox" class="menu-item"><span class="material-symbols-outlined">inbox</span> Inbox</a>
+        </nav>
+    </aside>
+
+    <main id="main-container">
+        <div class="mobile-tabs">
+            <button class="m-tab active" id="tab-controls">Control Panel</button>
+            <button class="m-tab" id="tab-doc">Contract Text</button>
+        </div>
+
+        <div class="split-layout" id="split-layout">
+            <div class="controls-panel" id="panel-ui">
+                <div id="role-badge" style="text-align:center; font-weight:bold; font-size:0.8rem; margin-bottom:10px; color: var(--accent);">IDENTIFYING ACCESS...</div>
+
+                <div id="employee-ui" style="display:none;">
+                    <div class="panel-section" id="section-sign">
+                        <h3 class="section-title">Pending Actions</h3>
+                        <div class="control-card">
+                            <h4>Acknowledge Agreement</h4>
+                            <button id="signBtn" class="btn btn-primary">Sign Contract</button>
+                        </div>
+                    </div>
+                    <div class="panel-section" id="section-submit">
+                        <h3 class="section-title">Submission</h3>
+                        <div class="control-card">
+                            <label>Units Achieved</label>
+                            <input type="number" id="performanceInput" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                            <button id="submitBtn" class="btn btn-primary">Encrypt & Submit</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="employer-ui" style="display:none;">
+                    <div class="panel-section">
+                        <h3 class="section-title">Oversight</h3>
+                        <div class="control-card">
+                            <input class="target-display" style="width:100%; border:none; font-weight:bold;" readonly>
+                            <div style="display:flex; gap:10px; margin-top:10px;">
+                                <button id="btnSatisfyTrue" class="btn btn-primary" style="flex:1">Approve</button>
+                                <button id="btnSatisfyFalse" class="btn btn-outline" style="flex:1">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="section-title">FHE Status</h3>
+                    <div class="control-card">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <span>Satisfied:</span> <span id="stat-satisfied">Locked</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Finalized:</span> <span id="stat-finalized">Locked</span>
+                        </div>
+                        <div style="text-align:center; margin-top:15px;">
+                            <div id="payout-val" style="font-size:1.8rem; font-weight:bold; color:var(--success);">$0.00</div>
+                        </div>
+                        <button id="calcBtn" class="btn btn-outline">Run Math</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-viewer" id="doc-ui">
+                <div class="paper-sheet">
+                    <textarea id="contract-editor"></textarea>
+                    <div id="locker" class="locker">
+                        <span class="material-symbols-outlined" style="font-size:3rem; color:var(--accent); margin-bottom:1rem;">lock</span>
+                        <h3>Confidential Content</h3>
+                        <p id="lock-msg">Authentication required via Zama KMS.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { deriveKeyFromSeed, decryptFile } from "http://localhost:4000/crypto.js";
+        import { ABI } from "http://localhost:4000/performance-abi.js";
+import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
+
+        // --- 🍔 MOBILE INTERFACE LOGIC ---
+        const toggleBtn = document.getElementById("menu-toggle");
+        const closeBtn = document.getElementById("sidebar-close");
+        const sidebar = document.getElementById("sidebar");
+        const tabControls = document.getElementById("tab-controls");
+        const tabDoc = document.getElementById("tab-doc");
+        const splitLayout = document.getElementById("split-layout");
+
+        toggleBtn.onclick = () => { sidebar.classList.add("active"); toggleBtn.style.display = "none"; };
+        closeBtn.onclick = () => { sidebar.classList.remove("active"); toggleBtn.style.display = "flex"; };
+        
+        tabControls.onclick = () => {
+            tabControls.classList.add("active"); tabDoc.classList.remove("active");
+            splitLayout.classList.remove("show-doc");
+        };
+        tabDoc.onclick = () => {
+            tabDoc.classList.add("active"); tabControls.classList.remove("active");
+            splitLayout.classList.add("show-doc");
+        };
+
+        // --- CONTRACT LOGIC (PRESERVED) ---
+        const CONTRACT_ADDRESS = "0x95E96dC42Dd16788ab9D3d1FF941498D8b5B4B21";
+        const ZAMA_CONFIG = {
+            aclContractAddress: "0xf0Ffdc93b7E186bC2f8CB3dAA75D86d1930A433D",
+            kmsContractAddress: "0xbE0E383937d564D7FF0BC3b46c51f0bF8d5C311A",
+            inputVerifierContractAddress: "0xBBC1fFCdc7C316aAAd72E807D9b0272BE8F84DA0",
+            verifyingContractAddressDecryption: "0x5D8BD78e2ea6bbE41f26dFe9fdaEAa349e077478",
+            verifyingContractAddressInputVerification: "0x483b9dE06E4E4C7D35CCf5837A1668487406D955",
+            chainId: 11155111, gatewayChainId: 10901, relayerUrl: "https://relayer.testnet.zama.org"
+        };
+
+        let contract, signer, userAddress, currentCID, instance;
+
+        async function init() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                currentCID = urlParams.get('cid');
+                if (!currentCID) throw new Error("Missing CID");
+
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = await provider.getSigner();
+                userAddress = await signer.getAddress();
+                contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+                document.getElementById("sidebar-wallet").innerText = userAddress.slice(0, 6) + "...";
+
+                tinymce.init({
+                    selector: '#contract-editor', height: 1100, menubar: false, toolbar: false,
+                    readonly: true, content_style: "body { font-family: serif; padding: 40px; }"
+                });
+
+                const Zama = window.relayerSDK;
+                await Zama.initSDK();
+                instance = await Zama.createInstance({ ...ZAMA_CONFIG, network: window.ethereum });
+
+                const job = await contract.performanceAgreements(currentCID);
+                setupRoleUI(job);
+                loadAndDecrypt(job);
+                attachEventListeners();
+            } catch (err) { console.error(err); }
+        }
+
+        function setupRoleUI(job) {
+            const isEmployer = userAddress.toLowerCase() === job.employer.toLowerCase();
+            const isEmployee = userAddress.toLowerCase() === job.employee.toLowerCase();
+            const badge = document.getElementById("role-badge");
+            if (isEmployer) {
+                badge.innerText = "Authorized: Employer"; document.getElementById("employer-ui").style.display = "block";
+            } else if (isEmployee) {
+                badge.innerText = "Authorized: Employee"; document.getElementById("employee-ui").style.display = "block";
+                if (job.isSigned) document.getElementById("section-sign").style.display = "none";
+            }
+        }
+
+        async function loadAndDecrypt(job) {
+            try {
+                const keypair = instance.generateKeypair();
+                const handles = [
+                    { handle: job.seed, contractAddress: CONTRACT_ADDRESS },
+                    { handle: job.target, contractAddress: CONTRACT_ADDRESS },
+                    { handle: job.bonus, contractAddress: CONTRACT_ADDRESS },
+                    { handle: job.actualPerformance, contractAddress: CONTRACT_ADDRESS },
+                    { handle: job.employerSatisfied, contractAddress: CONTRACT_ADDRESS },
+                    { handle: job.isFinalized, contractAddress: CONTRACT_ADDRESS },
+                    { handle: job.finalPayout, contractAddress: CONTRACT_ADDRESS }
+                ];
+                const startTime = Math.floor(Date.now() / 1000).toString();
+                const eip712 = instance.createEIP712(keypair.publicKey, [CONTRACT_ADDRESS], startTime, '10');
+                const signature = await signer.signTypedData(eip712.domain, { UserDecryptRequestVerification: eip712.types.UserDecryptRequestVerification }, eip712.message);
+                const decrypted = await instance.userDecrypt(handles, keypair.privateKey, keypair.publicKey, signature.replace("0x", ""), [CONTRACT_ADDRESS], userAddress, startTime, '10');
+
+                document.getElementById("stat-satisfied").innerText = decrypted[job.employerSatisfied] ? "Satisfied" : "Pending";
+                document.getElementById("stat-finalized").innerText = decrypted[job.isFinalized] ? "Target Met" : "Evaluating";
+                document.getElementById("payout-val").innerText = `$${decrypted[job.finalPayout]}`;
+
+                const res = await fetch(`https://gateway.pinata.cloud/ipfs/${currentCID}`);
+                const json = await res.json();
+                const aesKey = await deriveKeyFromSeed(decrypted[job.seed]);
+                const html = await decryptFile(json.content.contractText, aesKey, job.iv);
+
+                const finalDoc = html.replace(/{{TARGET}}/g, decrypted[job.target]).replace(/{{BONUS}}/g, decrypted[job.bonus]);
+                tinymce.get("contract-editor").setContent(finalDoc);
+                document.getElementById("locker").style.display = "none";
+            } catch (e) { document.getElementById("lock-msg").innerText = "Access Denied"; }
+        }
+
+        function attachEventListeners() {
+            document.getElementById("btnSatisfyTrue").onclick = () => submitVerdict(true);
+            document.getElementById("btnSatisfyFalse").onclick = () => submitVerdict(false);
+            document.getElementById("signBtn").onclick = () => manageTransaction(contract.signAgreement(currentCID), "Signed");
+            document.getElementById("calcBtn").onclick = () => manageTransaction(contract.calculatePayout(currentCID), "Finalized");
+            document.getElementById("submitBtn").onclick = async () => {
+                const val = document.getElementById("performanceInput").value;
+                const input = instance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
+                input.add128(BigInt(val));
+                const encrypted = await input.encrypt();
+                await manageTransaction(contract.submitPerformance(currentCID, encrypted.handles[0], encrypted.inputProof), "Submitted");
+            };
+        }
+
+        async function submitVerdict(val) {
+            const input = instance.createEncryptedInput(CONTRACT_ADDRESS, userAddress);
+            input.addBool(val);
+            const encrypted = await input.encrypt();
+            await manageTransaction(contract.employerSatisfaction(currentCID, encrypted.handles[0], encrypted.inputProof), "Updated");
+        }
+
+        async function manageTransaction(txPromise, msg) {
+            const tx = await txPromise; await tx.wait(); alert(msg); location.reload();
+        }
+
+        init();
+    </script>
+</body>
+</html>

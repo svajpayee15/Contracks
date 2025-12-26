@@ -1,0 +1,247 @@
+:root {
+    --sidebar-bg: #2b2424; 
+    --main-bg: #FDFBF7;   
+    --accent: #E89134;     
+    --border: #E0E0E0;
+    --text-main: #1A1A1A;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'DM Sans', 'Inter', sans-serif;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 16vw 84vw; /* Standard Responsive Grid */
+    overflow: hidden;
+    background-color: #fcfcfc; 
+}
+
+/* =========================================
+   SIDEBAR (Standardized)
+   ========================================= */
+aside {
+    background-color: var(--sidebar-bg);
+    color: white;
+    height: 100%;
+    padding: 3vh 1.5vw;
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    height: 6%;
+}
+.avatar { width: 2.5vw; height: 2.5vw; min-width: 35px; min-height: 35px; border-radius: 50%; background-color: #dcb; }
+.user-info { display: flex; flex-direction: column; }
+.role { font-size: 0.65rem; color: #aaa; letter-spacing: 1px; }
+.name { font-weight: 500; font-size: 0.9rem; white-space: nowrap; }
+
+.menu { display: flex; flex-direction: column; gap: 1vh; }
+.menu-item {
+    text-decoration: none;
+    color: #9A9A9A;
+    padding: 1.2vh 1vw;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.8vw;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+.menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+.menu-item.active { background: linear-gradient(145deg, #4a3e3e, #3e3333); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+.recents-list { margin-top: auto; padding-bottom: 2vh; }
+.recent-header { font-size: 0.75rem; color: #666; display: block; margin-bottom: 1.5vh; }
+.recent-item { display: flex; align-items: center; gap: 0.8vw; color: #aaa; font-size: 0.85rem; margin-bottom: 1.2vh; }
+.avatar-sm { width: 1.2vw; height: 1.2vw; border-radius: 50%; background: #555; }
+
+
+/* =========================================
+   MAIN LAYOUT
+   ========================================= */
+main {
+    display: grid;
+    grid-template-rows: 70px 1fr;
+    height: 100vh;
+}
+
+/* --- TOP NAV --- */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    background-color: white;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    border-radius: 8px;
+    width: 40%;
+    max-width: 400px;
+    gap: 10px;
+}
+.search-container input { border: none; background: transparent; outline: none; width: 100%; color: #333; }
+
+.nav-actions { display: flex; gap: 15px; }
+.dropdown {
+    padding: 8px 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+    background: white;
+}
+
+
+/* =========================================
+   KANBAN SECTION
+   ========================================= */
+section {
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #fcfcfc;
+    overflow: hidden;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.page-title { font-size: 2rem; font-weight: 700; color: #111; font-family: 'DM Sans', sans-serif;}
+
+.create-task-btn {
+    background-color: var(--accent); /* Orange */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.95rem;
+}
+
+/* --- KANBAN BOARD --- */
+.kanban-board {
+    display: flex;
+    gap: 20px;
+    height: 100%;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+.kanban-column {
+    flex: 1;
+    min-width: 260px; /* Responsive width */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.column-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5px;
+    margin-bottom: 5px;
+}
+.col-title { font-weight: 600; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
+.more-options { color: #aaa; cursor: pointer; letter-spacing: 2px; }
+
+.dot { width: 8px; height: 8px; border-radius: 50%; } /* Decorative dot */
+.dot.purple { background-color: #9b59b6; }
+.dot.red { background-color: #e74c3c; }
+.dot.green { background-color: #27ae60; }
+.dot.blue { background-color: #3498db; }
+
+
+/* --- CONTENT SCROLL INSIDE COLUMNS --- */
+.column-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 5px; /* Space for shadow */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* --- TASK CARD STYLE --- */
+.task-card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.task-card:hover { transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.08); }
+
+/* Tiny colored tag at top left */
+.card-tag {
+    position: absolute;
+    top: 15px; left: 0;
+    width: 4px; height: 20px;
+    border-radius: 0 4px 4px 0;
+}
+.red-tag { background-color: #e74c3c; }
+.green-tag { background-color: #27ae60; }
+.blue-tag { background-color: #3498db; }
+
+/* Image Preview */
+.card-preview {
+    height: 120px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+.doc-thumb {
+    width: 60%; height: 80%;
+    background: white;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 5px;
+}
+.doc-thumb h5 { font-size: 0.6rem; color: #333; }
+
+/* Body */
+.card-body { padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+.card-body h4 { font-size: 0.9rem; font-weight: 600; color: #222; margin-bottom: 5px; }
+
+.team-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #666; }
+.avatars { display: flex; }
+.av { width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; background: #555; margin-left: -8px; }
+.av.add { background: #3498db; color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; padding-bottom: 2px; }
+
+.card-footer {
+    border-top: 1px solid #f5f5f5;
+    margin-top: 5px;
+    padding-top: 10px;
+    display: flex;
+    gap: 15px;
+    font-size: 0.75rem; color: #888;
+}

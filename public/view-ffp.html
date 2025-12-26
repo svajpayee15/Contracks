@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Analysis | Contracks</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="summarize.css">
+</head>
+<body>
+
+    <button id="menu-toggle" class="menu-toggle">
+        <span class="material-symbols-outlined">menu</span>
+    </button>
+
+    <aside id="sidebar">
+        <button id="sidebar-close" class="sidebar-close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-info"><span class="name" id="sidebar-wallet">Connecting...</span></div>
+        </div>
+        <nav class="menu">
+            <a href="/create" class="menu-item"><span class="material-symbols-outlined">add_circle</span> Create</a>
+            <a href="/summarize" class="menu-item active"><span class="material-symbols-outlined">psychology</span> Simplify</a>
+            <a href="/inbox" class="menu-item"><span class="material-symbols-outlined">inbox</span> Inbox</a>
+        </nav>
+    </aside>
+
+    <main id="main-container">
+        <div class="mobile-tabs">
+            <button class="m-tab active" id="tab-controls">Analysis</button>
+            <button class="m-tab" id="tab-doc">Source Text</button>
+        </div>
+
+        <div class="split-layout" id="split-layout">
+            <div class="controls-panel">
+                <div class="section-title">AI Engine Status</div>
+                <div id="status-badge">READY TO ANALYZE</div>
+
+                <div class="panel-section">
+                    <h3 class="section-title">Contract Ingestion</h3>
+                    <div class="upload-card" id="uploadTrigger">
+                        <span class="material-symbols-outlined" style="font-size: 40px; color: var(--accent);">upload_file</span>
+                        <h4>Upload Document</h4>
+                        <p>PDF or Text Agreement</p>
+                    </div>
+                </div>
+
+                <div class="panel-section" id="ai-results-section" style="display: none;">
+                    <h3 class="section-title">Extracted Parameters</h3>
+                    <div id="ai-params-container">
+                        </div>
+                    <button class="btn btn-primary" id="btn-export">Apply to FHE Contract</button>
+                </div>
+            </div>
+
+            <div class="doc-viewer" id="doc-ui">
+                <div class="paper-sheet">
+                    <div id="empty-state">
+                        <span class="material-symbols-outlined" style="font-size: 64px; color: #eee;">description</span>
+                        <h2>Upload a contract to get its Smart Analysis</h2>
+                    </div>
+                    <div id="analysis-display" style="display:none; padding: 40px;">
+                        <div class="risk-analysis-box">
+                            <h2 style="font-family: 'Playfair Display'; margin-bottom: 20px;">Risk Analysis ✨</h2>
+                            <div id="risk-content"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="uploadModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select Document</h3>
+                <button id="closeModal" class="material-symbols-outlined">close</button>
+            </div>
+            <div class="inbox-list">
+                <label class="inbox-item">
+                    <input type="file" id="fileInput" hidden accept=".txt,.pdf">
+                    <span class="material-symbols-outlined">add_circle</span>
+                    <div class="item-info">
+                        <strong>Upload New File</strong>
+                        <span>Browse local storage</span>
+                    </div>
+                </label>
+                <div class="divider">OR CHOOSE FROM VAULT</div>
+                <div class="inbox-item sample" data-file="employment">
+                    <span class="material-symbols-outlined">description</span>
+                    <div class="item-info">
+                        <strong>Employment_Standard.pdf</strong>
+                        <span>Drafted Jan 20, 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="summarize.js" type="module"></script>
+</body>
+</html>

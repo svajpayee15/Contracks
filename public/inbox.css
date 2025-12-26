@@ -1,0 +1,142 @@
+:root {
+    --sidebar-bg: #2b2424; 
+    --main-bg: #FDFBF7;    
+    --accent: #E89134;     
+    --border: #E0E0E0;
+    --text-main: #1A1A1A;
+}
+
+* { padding: 0; margin: 0; box-sizing: border-box; font-family: 'DM Sans', sans-serif; }
+
+body {
+    width: 100vw; height: 100vh;
+    display: grid;
+    grid-template-columns: 16vw 84vw; 
+    overflow: hidden;
+    background-color: var(--main-bg);
+    position: relative;
+}
+
+/* --- SIDEBAR --- */
+aside {
+    background-color: var(--sidebar-bg);
+    color: white; height: 100%;
+    padding: 3vh 1.5vw;
+    display: flex; flex-direction: column; gap: 4vh;
+    transition: transform 0.3s ease; 
+    z-index: 1000; 
+}
+
+.user-profile { display: flex; align-items: center; gap: 1vw; height: 6%; }
+.avatar { width: 2.5vw; height: 2.5vw; min-width: 35px; min-height: 35px; border-radius: 50%; background-color: #dcb; }
+.user-info { display: flex; flex-direction: column; }
+.name { font-weight: 500; font-size: 0.9rem; white-space: nowrap; }
+.role { font-size: 0.7rem; color: #aaa; letter-spacing: 1px; }
+
+.menu { display: flex; flex-direction: column; gap: 1vh; }
+.menu-item { width:100%; text-decoration: none; color: #9A9A9A; padding: 1.2vh 1vw; border-radius: 12px; display: flex; align-items: center; gap: 0.8vw; font-size: 0.95rem; transition: 0.2s; }
+.menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+.menu-item.active { background: linear-gradient(145deg, #4a3e3e, #3e3333); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+.recents-list { margin-top: auto; padding-bottom: 2vh; }
+.recent-header { font-size: 0.75rem; color: #666; display: block; margin-bottom: 1.5vh; }
+.recent-item { display: flex; align-items: center; gap: 0.8vw; color: #aaa; font-size: 0.85rem; margin-bottom: 1.2vh; }
+.avatar-sm { width: 1.2vw; height: 1.2vw; border-radius: 50%; background: #555; }
+
+/* --- MAIN --- */
+main {
+    height: 100vh; width: 100%; display: flex; flex-direction: column;
+}
+
+nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; }
+.search-container { display: flex; align-items: center; background-color: white; padding: 10px 15px; border-radius: 30px; width: 300px; gap: 10px; border:1px solid #eee; }
+.search-container input { border: none; background: transparent; outline: none; width: 100%; }
+.nav-icons .icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-left: 10px; opacity: 0.6; }
+
+section { padding: 20px 40px; display: flex; flex-direction: column; gap: 20px; height: 100%; }
+.page-title { font-size: 2.2rem; font-weight: 700; color: #222; font-family: 'Inter', sans-serif; }
+
+.options { display: flex; justify-content: space-between; align-items: center; }
+.tabs { display: flex; gap: 10px; }
+.tab { display: flex; align-items: center; gap: 8px; padding: 8px 16px; border: 1px solid #eee; background-color: white; border-radius: 8px; cursor: pointer; font-weight: 500; color: #444; font-size: 0.9rem; }
+.tab.active { background-color: #222; color: white; border-color: #222; }
+.calendar-btn { background-color: white; border: 1px solid #eee; padding: 10px; border-radius: 8px; cursor: pointer; }
+
+/* --- TABLE --- */
+.contracts-container { background-color: white; border-radius: 12px; border: 1px solid #f0f0f0; display: flex; flex-direction: column; flex-grow: 1; overflow: hidden; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+.contracts-header, .contract-row { display: grid; grid-template-columns: 50px 1.5fr 3fr 1fr; padding: 16px 20px; align-items: center; border-bottom: 1px solid #f0f0f0; }
+.contracts-header { background-color: #F9FAFC; font-weight: 600; color: #111; font-size: 0.85rem; }
+.contracts-list { overflow-y: auto; flex-grow: 1; padding-bottom: 50px; }
+.contract-row:hover { background-color: #fafafa; }
+
+.col-star { color: #ccc; font-size: 1.2rem; }
+.col-name { font-weight: 600; color: #222; }
+.col-desc { color: #555; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9rem; }
+.col-date { text-align: right; color: #666; font-size: 0.85rem; }
+
+.pagination { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: white; border: 1px solid #eee; border-radius: 20px; padding: 5px 15px; display: flex; gap: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.page-arrow { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #555; }
+
+/* =======================================================
+   🍔 MOBILE RESPONSIVENESS
+   ======================================================= */
+
+/* 1. Toggle Button (Hamburger) */
+.menu-toggle {
+    display: none; /* Desktop hidden */
+    position: fixed; top: 15px; left: 15px;
+    z-index: 1001; background: var(--accent); color: white;
+    border: none; border-radius: 8px; width: 40px; height: 40px;
+    cursor: pointer; align-items: center; justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: opacity 0.3s ease;
+}
+
+/* 2. Hidden State for Hamburger (When Sidebar Open) */
+.menu-toggle.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 3. Close Button (Inside Sidebar) */
+.sidebar-close {
+    display: none; /* Desktop hidden */
+    position: absolute; top: 15px; right: 15px;
+    background: transparent; color: white;
+    border: none; font-size: 1.5rem; cursor: pointer;
+    z-index: 1002;
+}
+
+/* 4. Responsive Logic */
+@media (max-width: 1024px) {
+    body { grid-template-columns: 1fr; }
+
+    aside {
+        position: fixed; top: 0; left: 0; width: 260px;
+        transform: translateX(-100%);
+        box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+    aside.active { transform: translateX(0); }
+
+    /* Show Buttons on Mobile */
+    .menu-toggle { display: flex; }
+    .sidebar-close { display: block; }
+
+    nav { padding-left: 70px; } 
+}
+
+@media (max-width: 768px) {
+    section { padding: 15px; }
+    nav { padding: 10px 15px 10px 70px; flex-wrap: wrap; height: auto; gap: 10px; }
+    .search-container { width: 100%; order: 2; margin-top: 10px; }
+    .nav-icons { margin-left: auto; order: 1; }
+
+    .contracts-header { display: none; }
+    .contract-row {
+        grid-template-columns: 1fr; 
+        gap: 5px; padding: 15px; border-bottom: 1px solid #eee;
+    }
+    .col-star { display: none; }
+    .col-date { text-align: left; font-size: 0.75rem; color: #999; margin-top: 5px; }
+    .col-desc { white-space: normal; font-size: 0.85rem; color: #666; }
+}

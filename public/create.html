@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create | Contracks</title>
+    <link rel="stylesheet" href="create.css">
+    <link rel="stylesheet" href="ui-utils.css"> 
+    
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    
+    <script src="https://cdn.tiny.cloud/1/4f18ubuuhi7d98321bdi8y78zntfzd4vbyqjp35bcodio8lb/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/6.11.1/ethers.umd.min.js"></script>
+    <script src="https://cdn.zama.org/relayer-sdk-js/0.3.0-8/relayer-sdk-js.umd.cjs" type="text/javascript"></script>
+</head>
+<body>
+    <button id="menu-toggle" class="menu-toggle">
+    <span class="material-symbols-outlined">menu</span>
+    </button>
+   <aside>
+    <div class="user-profile">
+        <div class="avatar"></div>
+        <div class="user-info">
+            <span class="name" id="sidebar-wallet">Connecting...</span>
+        </div>
+    </div>
+
+    <nav class="menu">
+          <a href="/create" class="menu-item active"><span class="material-symbols-outlined">add_circle</span> Create</a>
+            <a href="/summarize" class="menu-item"><span class="material-symbols-outlined">psychology</span> Simplify</a>
+            <a href="/inbox" class="menu-item"><span class="material-symbols-outlined">inbox</span> Inbox</a>
+    </nav>
+
+    <div class="recents-list">
+        <span class="recent-header">RECENTS +</span>
+        </div>
+   </aside>
+
+   <main>
+    <section id="main-section">
+        <div class="initial-view">
+            <h1 class="greeting">Good afternoon, Builder.</h1>
+            
+            <div class="prompt-container">
+                <input class="chat-input" type="text" placeholder="Describe the contract you need...">
+                <div class="prompt-actions">
+                    <button class="sendPrompt"><span class="material-symbols-outlined">arrow_upward</span></button>
+                </div>
+            </div>
+
+         <div class="quick-chips">
+    <button class="chip chip-1" data-type="salary">💰 Salary Stream</button>
+    <button class="chip chip-2" data-type="performance">📊 Performance Review</button>
+    <button class="chip chip-3" data-type="ffp">⚖️ Fair Play Vesting</button>
+    <button class="chip chip-4" data-type="voting">🗳️ Board Voting</button>
+    <button class="chip chip-5" data-type="plain">📄 General Agreement</button>
+</div>
+        </div>
+    </section>
+   </main>
+
+   <div id="process-overlay" class="overlay hidden">
+        <div class="process-modal">
+            <div class="modal-header">
+                <h3>🚀 Deploying Contract</h3>
+                <p>Please keep this tab open. This may take a minute.</p>
+            </div>
+            
+            <div class="steps-container">
+                <div class="step-item" id="step-encrypt">
+                    <div class="step-icon"></div>
+                    <div class="step-text">
+                        <span class="title">Securing Data</span>
+                        <span class="desc">Encrypting salary details with AES-256...</span>
+                    </div>
+                </div>
+                <div class="step-item" id="step-ipfs">
+                    <div class="step-icon"></div>
+                    <div class="step-text">
+                        <span class="title">Decentralized Storage</span>
+                        <span class="desc">Uploading encrypted legal text to IPFS...</span>
+                    </div>
+                </div>
+                <div class="step-item" id="step-zama">
+                    <div class="step-icon"></div>
+                    <div class="step-text">
+                        <span class="title">Zama FHE Generation</span>
+                        <span class="desc">Generating confidential zero-knowledge inputs...</span>
+                    </div>
+                </div>
+                <div class="step-item" id="step-wallet">
+                    <div class="step-icon"></div>
+                    <div class="step-text">
+                        <span class="title">Wallet Signature</span>
+                        <span class="desc">Please sign the transaction in MetaMask...</span>
+                    </div>
+                </div>
+                <div class="step-item" id="step-mining">
+                    <div class="step-icon"></div>
+                    <div class="step-text">
+                        <span class="title">Confirming Transaction</span>
+                        <span class="desc">Waiting for block confirmation...</span>
+                    </div>
+                </div>
+                <div class="step-item" id="step-indexing">
+                    <div class="step-icon"></div>
+                    <div class="step-text">
+                        <span class="title">Syncing to Inbox</span>
+                        <span class="desc">Indexing contract metadata to database...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="loader-bar"><div class="bar-fill"></div></div>
+            </div>
+        </div>
+    </div>
+
+   <script type="module" src="create.js"></script>
+</body>
+</html>

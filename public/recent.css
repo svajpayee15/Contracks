@@ -1,0 +1,255 @@
+:root {
+    --sidebar-bg: #2b2424; 
+    --main-bg: #FDFBF7;   
+    --accent: #E89134;     
+    --border: #E0E0E0;
+    --text-main: #1A1A1A;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'DM Sans', 'Inter', sans-serif;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 16vw 84vw; /* Standard Responsive Grid */
+    overflow: hidden;
+    background-color: #fcfcfc; 
+}
+
+/* =========================================
+   SIDEBAR (Standardized)
+   ========================================= */
+aside {
+    background-color: var(--sidebar-bg);
+    color: white;
+    height: 100%;
+    padding: 3vh 1.5vw;
+    display: flex;
+    flex-direction: column;
+    gap: 4vh;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    height: 6%;
+}
+.avatar { width: 2.5vw; height: 2.5vw; min-width: 35px; min-height: 35px; border-radius: 50%; background-color: #dcb; }
+.user-info { display: flex; flex-direction: column; }
+.role { font-size: 0.65rem; color: #aaa; letter-spacing: 1px; }
+.name { font-weight: 500; font-size: 0.9rem; white-space: nowrap; }
+
+.menu { display: flex; flex-direction: column; gap: 1vh; }
+.menu-item {
+    text-decoration: none;
+    color: #9A9A9A;
+    padding: 1.2vh 1vw;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 0.8vw;
+    font-size: 0.95rem;
+    transition: 0.2s;
+}
+.menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+.menu-item.active { background: linear-gradient(145deg, #4a3e3e, #3e3333); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+
+.recents-list { margin-top: auto; padding-bottom: 2vh; }
+.recent-header { font-size: 0.75rem; color: #666; display: block; margin-bottom: 1.5vh; }
+.recent-item { display: flex; align-items: center; gap: 0.8vw; color: #aaa; font-size: 0.85rem; margin-bottom: 1.2vh; }
+.avatar-sm { width: 1.2vw; height: 1.2vw; border-radius: 50%; background: #555; }
+
+
+/* =========================================
+   MAIN LAYOUT
+   ========================================= */
+main {
+    display: grid;
+    grid-template-rows: 70px 1fr;
+    height: 100vh;
+}
+
+/* --- TOP NAV --- */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    background-color: white;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    border-radius: 8px;
+    width: 350px;
+    gap: 10px;
+}
+.search-container input { border: none; background: transparent; outline: none; width: 100%; color: #333; }
+
+.nav-actions { display: flex; gap: 15px; }
+.dropdown {
+    padding: 8px 15px;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #555;
+    cursor: pointer;
+    background: white;
+}
+
+/* --- CONTENT SECTION --- */
+section {
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: #fcfcfc;
+    overflow: hidden;
+}
+
+.page-title { font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 10px; font-family: 'DM Sans', sans-serif;}
+
+/* --- CONTROLS ROW --- */
+.controls-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.filter-tabs { display: flex; gap: 10px; }
+.filter-tab {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid #eee; background: white; border-radius: 8px;
+    font-size: 0.9rem; font-weight: 500; color: #555; cursor: pointer;
+    transition: 0.2s;
+}
+.filter-tab.active { background-color: var(--accent); color: white; border-color: var(--accent); }
+.filter-tab:hover { background-color: #f9f9f9; }
+.filter-tab.active:hover { background-color: #d67e22; }
+
+/* VIEW TOGGLES */
+.view-toggles {
+    display: flex;
+    background: white;
+    padding: 4px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    gap: 4px;
+}
+.toggle-btn {
+    width: 32px; height: 32px;
+    border: none; background: transparent;
+    border-radius: 6px;
+    cursor: pointer; color: #999;
+    display: flex; align-items: center; justify-content: center;
+}
+.toggle-btn.active {
+    background-color: var(--accent);
+    color: white;
+}
+
+/* =========================================
+   RECENTS CONTAINER (THE MAGIC)
+   ========================================= */
+
+/* 1. DEFAULT GRID VIEW */
+.recents-container {
+    overflow-y: auto;
+    padding-bottom: 50px;
+    /* Grid Logic */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.recent-card {
+    background: white;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column; /* Stack vertically for grid */
+}
+.recent-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+.card-preview {
+    height: 140px;
+    background-color: #f4f6f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid #f0f0f0;
+}
+.preview-doc {
+    width: 70%; height: 80%;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 10px;
+    display: flex; flex-direction: column; gap: 5px;
+    text-align: center;
+}
+.preview-doc h4 { font-size: 0.5rem; color: #333; margin-top: 5px; }
+.preview-doc .lines { height: 2px; width: 100%; background: #eee; margin-top: auto; }
+
+.card-info { padding: 15px; display: flex; flex-direction: column; gap: 8px; }
+.card-title { font-weight: 600; font-size: 0.95rem; color: #222; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-meta { font-size: 0.8rem; color: #888; display: flex; align-items: center; gap: 6px; }
+
+.badge { 
+    width: 16px; height: 16px; 
+    border-radius: 3px; 
+    font-size: 0.6rem; font-weight: bold; color: white;
+    display: flex; align-items: center; justify-content: center;
+}
+.badge.orange { background-color: var(--accent); }
+.badge.green { background-color: #27ae60; }
+
+
+/* 2. LIST VIEW MODIFIER */
+/* When .list-view is added to container via JS */
+.recents-container.list-view {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recents-container.list-view .recent-card {
+    flex-direction: row; /* Horizontal layout */
+    align-items: center;
+    height: 70px;
+    padding-right: 20px;
+}
+
+.recents-container.list-view .card-preview {
+    width: 80px;
+    height: 100%;
+    border-bottom: none;
+    border-right: 1px solid #f0f0f0;
+}
+.recents-container.list-view .preview-doc {
+    width: 40px; height: 50px;
+    font-size: 0.5rem;
+}
+.recents-container.list-view .preview-doc h4 { display: none; } /* Hide title in tiny preview */
+
+.recents-container.list-view .card-info {
+    flex-grow: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.recents-container.list-view .card-title { font-size: 1rem; }
