@@ -147,7 +147,7 @@ app.post('/api/analyze', async (req, res) => {
 // --- C. Auth (Login) ---
 app.post("/login", async (req, res) => {
     try {
-        const { walletAddress, name } = req.body;
+        let { walletAddress, name } = req.body;
         console.log(walletAddress,name)
 
         if(!name) name = "user"
