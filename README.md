@@ -1,4 +1,4 @@
-# 🔒 Contracks: The Confidential Contract Lifecycle Management (CLM) Protocol
+# 🔒 Contracks: The Confidential Contract Lifecycle Management (CLM) Project on Zama
 
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 ![Network](https://img.shields.io/badge/Network-Zama%20fhEVM%20(Devnet)-orange)
