@@ -1,7 +1,7 @@
-import { ABI } from "https://contracks.vercel.app/public/boardVoting-abi.js"
-import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/public/crypto.js";
+import { ABI } from "https://contracks.vercel.app/boardVoting-abi.js"
+import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/crypto.js";
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
-import { ui } from "https://contracks.vercel.app/public/ui-utils.js";
+import { ui } from "https://contracks.vercel.app/ui-utils.js";
 
 // ✅ YOUR CONFIGS
 const CONTRACT_ADDRESS = "0x093Ce64c121d51FC03d71C25B715E7C1E4374C53"; 
