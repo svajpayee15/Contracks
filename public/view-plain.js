@@ -22,7 +22,7 @@ const ZAMA_CONFIG = {
     relayerUrl: "https://relayer.testnet.zama.org"
 };
 
-const API_URL = "http://localhost:3000/api"; // Updated port match
+const API_URL = "https://contracks.vercel.app/api"; // Updated port match
 
 const uiLock = document.getElementById("locker");
 const uiMsg = document.getElementById("lock-msg");
