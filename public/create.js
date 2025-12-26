@@ -155,7 +155,8 @@ function initAiControls() {
                 body: JSON.stringify({ 
                     text: currentText, 
                     type: currentTemplate || 'custom', 
-                    query: `MODE: ${aiMode.toUpperCase()}. INSTRUCTION: ${query}. IMPORTANT: PRESERVE ALL {{VAR}} and [[VAR]] PLACEHOLDERS.` 
+                    query: `MODE: ${aiMode.toUpperCase()}. INSTRUCTION: ${query}. IMPORTANT: PRESERVE ALL {{VAR}} and [[VAR]] PLACEHOLDERS.` ,
+                    task: aiMode
                 })
             });
             const data = await res.json();
