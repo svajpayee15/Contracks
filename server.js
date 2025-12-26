@@ -153,7 +153,7 @@ app.post("/login", async (req, res) => {
             { expiresIn: "7d" }
         );
 
-        res.cookie("token", token, { httpOnly: true })
+        res.cookie("token", token)
            .status(200)
            .json({ success: true, user });
 
