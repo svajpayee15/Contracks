@@ -52,14 +52,19 @@ We use a **Hybrid Privacy Architecture** that separates Logic (On-Chain) from St
 
 1.  **Drafting (Client-Side):**
     * User drafts a contract using our **TinyMCE** editor.
+    * User asks AI to help him out.
     * **Zama SDK** generates ephemeral keys in the browser.
+    * Senstive fields are classified into two: 1. Dynamic Data and 2.Static Data
+    ** Dynamic Data requires compute and is stored on the blockhain and are encrypted variables using Zama's FHE.
+    ** Static Data doesnt requires compute and is stored after encryption in IPFS ( via AES-256 )
+    * The user legal 
     * Sensitive fields (e.g., `$150,000`, `Vote: YES`) are encrypted into **Ciphertext Handles** (`euint64`).
 2.  **Encryption & Indexing:**
     * **Static Data:** The legal text is AES-256 encrypted. The AES key is then encrypted with FHE and stored on-chain (Hybrid Scheme).
     * **Storage:** The encrypted PDF/Text is pinned to **IPFS (Pinata)**.
     * **Indexing:** Metadata (Sender, Receiver, Status) is synced to **MongoDB** for instant "Inbox" retrieval.
 3.  **AI Analysis:**
-    * **Google Gemini 2.0** scans the draft. It ignores the encrypted hash strings but analyzes the surrounding legal clauses for risk.
+    * **qwen2p5-vl-32b-instruct** scans the draft. It ignores the encrypted hash strings but analyzes the surrounding legal clauses for risk.
 4.  **On-Chain Execution:**
     * The smart contract receives the `Ciphertext`. It stores it and executes the defined logic (e.g., Vesting triggers) automatically.
 
