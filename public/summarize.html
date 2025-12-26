@@ -228,7 +228,7 @@
                 const res = await fetch(`https://gateway.pinata.cloud/ipfs/${cid}`);
                 const json = await res.json();
                 const aesKey = await deriveKeyFromSeed(decrypted[seedHandle]);
-                currentText = await decryptFile(json.content.contractText, aesKey, iv);
+                currentText = await decryptFile(json.content.contractText, aesKey, iv.split("::")[0]);
                 
                 tinymce.get('tinymce-editor').setContent(currentText);
                 chatWithGemini("Summarize this agreement briefly.");
