@@ -1,4 +1,4 @@
-# 🔒 Contracks: The Confidential Contract Lifecycle Management (CLM) Project on Zama
+# 🔒 Contracks: The Confidential Contract Lifecycle Management (CLM) Protocol
 
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 ![Network](https://img.shields.io/badge/Network-Zama%20fhEVM%20(Devnet)-orange)
@@ -7,131 +7,187 @@
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 > **"Privacy where it matters, Transparency where it counts."**
-> 
-> Contracks is the world's first **Confidential CLM** built on Ethereum using Zama's FHEVM. It allows enterprises to draft, sign, and **automatically execute** legal agreements on-chain without ever revealing the sensitive data (amounts, votes, targets) to the public validators.
-And also lets them compute on their data without ever revealing it, levaraging Zama's true utility.
-
-> Contracts is not only about encrypting and storing data, its about performing logic/math on it.
+>
+> Contracks is the world's first **Confidential CLM** platform built on Ethereum using **Zama's fhEVM**. It empowers enterprises to draft, sign, and **automatically execute** legal agreements on-chain without ever revealing sensitive business data (salaries, votes, targets) to the public.
+>
+> We don't just encrypt data; we **compute** on it.
 
 ---
 
 ## 📚 Table of Contents
 
-1. [🌟 The Core Innovation (Why FHE?)](#-the-core-innovation-why-fhe)
+1. [🌟 The Core Innovation](#-the-core-innovation)
 2. [🏗️ Technical Architecture](#-technical-architecture)
-3. [🔥 Features & Use Cases](#-features--use-cases)
-    - [Confidential Payroll](#1-confidential-payroll-streams)
-    - [Blind Board Governance](#2-blind-board-governance)
-    - [AI Legal Auditor](#3-ai-legal-auditor)
-4. [🛠️ Tech Stack Deep Dive](#%EF%B8%8F-tech-stack-deep-dive)
-5. [📂 Project Structure](#-project-structure)
-6. [💻 Installation & Setup Guide](#-installation--setup-guide)
+3. [📜 Smart Contract Suite (The Big 5)](#-smart-contract-suite-the-big-5)
+4. [✨ Platform Features](#-platform-features)
+5. [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
+6. [💻 Installation & Setup](#-installation--setup)
 7. [📡 API Reference](#-api-reference)
-8. [🧩 Smart Contract Logic (The FHE Layer)](#-smart-contract-logic-the-fhe-layer)
-9. [🛡️ Security Implementation](#%EF%B8%8F-security-implementation)
-10. [🔮 Roadmap](#-roadmap)
+8. [🛡️ Security & Privacy](#%EF%B8%8F-security--privacy)
 
 ---
 
-## 🌟 The Core Innovation: Why FHE?
+## 🌟 The Core Innovation
 
-### The "Blockchain Privacy Paradox"
-Public blockchains like Ethereum are revolutionary for trust, but **terrible for business privacy**. 
-* You cannot put an employee's salary on-chain because everyone can see it.
-* You cannot privately close a deal with a client.
-* Nowadays, Procurement Contracts like Firm Fixed-Price(FFP) requires privacy and compute.
-* You cannot conduct a secret board vote on-chain because the live tally influences the voters.
+### The Problem: The "Blockchain Privacy Paradox"
+Enterprises love the automation of smart contracts but hate the transparency.
+* **HR** cannot stream salaries on-chain because everyone can see the amounts.
+* **Boards** cannot vote on-chain because live tallies influence voter behavior.
+* **Procurement** cannot use smart contracts for "Firm Fixed-Price" (FFP) deals because competitor pricing would be exposed.
 
 ### The Solution: Fully Homomorphic Encryption (FHE)
-Contracks leverages **Zama's FHEVM** to solve this. FHE allows us to perform mathematical operations on encrypted data.
-
-ZK cant do what FHE does, Contracks not only store encrypted data but performs the math on it.
-
-* **Traditional Encryption:** Data is locked. To use it, you must decrypt it (exposing it).
-* **FHE (Contracks):** Data remains locked *during* processing.
-    * *Example:* `Encrypt(5)` + `Encrypt(5)` = `Encrypt(10)`
-    * The node performing the addition **never knows** the numbers were 5 and 5.
+Contracks leverages **Zama's fhEVM** to enable "Blind Computation."
+* **Traditional Encryption:** Data is locked at rest but must be decrypted to be processed (creating a security hole).
+* **Contracks FHE:** We perform logic on encrypted data directly.
+    * *Example:* `Encrypt(Target) - Encrypt(Performance) = Encrypted(Result)`
+    * The blockchain validator executes this math **without ever seeing the numbers**.
 
 ---
 
 ## 🏗️ Technical Architecture
 
-Contracks is a hybrid dApp that merges high-performance Web2 indexing with state-of-the-art Web3 privacy.
+We use a **Hybrid Privacy Architecture** that separates Logic (On-Chain) from Storage (IPFS).
 
 ### High-Level Data Flow
 
 1.  **Drafting (Client-Side):**
-    * User chooses a contract-type.
-    * Asks AI to help him write or guide while drafting his contract.
-    * User can draft very precise, neat and tidy Contracts with the high quality text editor ~ TinyMCE
-    * 2 types of Sensitive fields (e.g., "Salary: $5000", "Company Name: Zama") are extracted.
-    * Sensitive fields are classified into: 
-            1. Dynamic Data - Requires Compution
-            2. Static Data - Doesnt requires Computation
-    * **RelayerSDK** generates encrypted handles (ciphertexts) of the Dynamic Data.
-2.  **Storage (IPFS & MongoDB):**
-    * The raw legal Text/PDF and the Static Data are encrypted via AES-256 Encryption with the same AES-Key.
-    * The seed ( used to generate the AES-Key ) is encrypted with Zama.
-    * The raw legal text/PDF and Static Data is pinned to **IPFS (Pinata)** for immutability.
-    * Offchain Indexer: The metadata (Who sent it? What is the IPFS CID? Is it signed?) is indexed in **MongoDB** for instant UI loading.
-3.  **Summarize (AI Layer):**
-    * The **Google Gemini 2.0 Flash** model scans the contract text excluding Sensitive Fields.
-    * It identifies "Risky Clauses" and respects the FHE placeholders and Static placeholders, explaining context without guessing values.
-4.  **Execution (On-Chain):**
-    * The encrypted Fields along with the Seed are sent to the Smart Contract.
+    * User drafts a contract using our **TinyMCE** editor.
+    * **Zama SDK** generates ephemeral keys in the browser.
+    * Sensitive fields (e.g., `$150,000`, `Vote: YES`) are encrypted into **Ciphertext Handles** (`euint64`).
+2.  **Encryption & Indexing:**
+    * **Static Data:** The legal text is AES-256 encrypted. The AES key is then encrypted with FHE and stored on-chain (Hybrid Scheme).
+    * **Storage:** The encrypted PDF/Text is pinned to **IPFS (Pinata)**.
+    * **Indexing:** Metadata (Sender, Receiver, Status) is synced to **MongoDB** for instant "Inbox" retrieval.
+3.  **AI Analysis:**
+    * **Google Gemini 2.0** scans the draft. It ignores the encrypted hash strings but analyzes the surrounding legal clauses for risk.
+4.  **On-Chain Execution:**
+    * The smart contract receives the `Ciphertext`. It stores it and executes the defined logic (e.g., Vesting triggers) automatically.
 
 ---
 
-## 🔥 Features & Use Cases
+## 📜 Smart Contract Suite (The Big 5)
 
-### 1. Confidential PSUs (Confidential Performance Share Units):
-* **Logic:** Employer wants to give a target to the Employee to be completed within a deadline for a fixed bonus. If the Employer is satisfied with the target/work acheived/done by the Employee then the Employee can simply get Paid. All this happens without revealing the *Target*, *Bonus*, *Employer's Satisfaction*, 
-* **FHE Variables:** The following FHE variables and their types are used in this Smart Contract:
-                        1. eSeed ( euint64 )
-                        2. target ( euint128 )
-                        3. bonus ( euint128 )
-                        4. actualPerformance ( euint128 )
-                        5. finalPayout ( euint128 )
-                        6. employerSatisfaction ( ebool )
-                        7. isFinalized ( ebool )
+We have deployed 5 specialized FHE contracts to handle the entire lifecycle of enterprise agreements.
 
-### 2. Blind Board Governance
-* **Logic:** A DAO or Board votes on sensitive motions (e.g., "Fire the CEO").
-* **Tech:** Votes are cast as `ebool` (Encrypted Booleans). The contract accumulates the count: `Total = TFHE.add(VoteA, VoteB)`.
-* **Result:** The tally remains hidden until the deadline. Only the final `Decrypted(Total)` is revealed. Prevents "Bandwagoning" and social pressure.
+### 1. 🏛️ BoardVoting (Blind Governance)
+* **Use Case:** Secret board resolutions, DAO governance, and sensitive motion passing.
+* **FHE Logic:**
+    * Votes are cast as `ebool` (Encrypted Boolean).
+    * The contract sums them: `Total = TFHE.add(VoteA, VoteB)`.
+    * **Privacy:** The tally is hidden until the deadline. Even the admin cannot see individual votes.
 
-### 3. AI Legal Auditor
-* **Logic:** Before signing, users click "Analyze with AI".
-* **Tech:** We inject a custom **System Prompt** into Gemini 2.0 that forces it to act as a "Senior Legal Partner".
-* **Output:** It returns a structured JSON risk assessment, highlighting clauses in Red/Orange based on severity.
+### 2. 📈 Performance (Confidential Vesting)
+* **Use Case:** Employee bonuses based on secret KPI targets (e.g., "Hit $1M revenue").
+* **FHE Logic:**
+    * **Inputs:** `euint128 target`, `euint128 actualPerformance`.
+    * **Computation:** `TFHE.gt(actualPerformance, target)` (Greater Than).
+    * **Result:** If true, the contract auto-releases the bonus. The public never knows the target or the result.
+
+### 3. 💼 FFP (Firm Fixed-Price)
+* **Use Case:** Procurement and Freelance contracts where the total value must remain hidden from competitors.
+* **FHE Logic:**
+    * **Inputs:** `euint128 fixedFee`, `ebool deliverableAccepted`.
+    * **Mechanism:** The client deposits an encrypted amount. Upon `deliverableAccepted` == `true`, the funds move.
+    * **Privacy:** On-chain observers see a transaction, but the `Amount` is `0x...` (Encrypted).
+
+### 4. 💰 Salary (Confidential Streaming)
+* **Use Case:** Continuous payroll streams that protect employee privacy.
+* **FHE Logic:**
+    * **Inputs:** `euint64 flowRate` (Salary per second).
+    * **Computation:** `Claimable = TFHE.mul(flowRate, timeElapsed)`.
+    * **Feature:** Allows employees to generate a "Proof of Income" (ZKP) for loans without revealing their exact salary to the bank.
+
+### 5. 📝 PlainAgreement (Standard CLM)
+* **Use Case:** Non-financial legal documents (NDAs, MOUs) that need immutable signing but no computational logic.
+* **Logic:**
+    * IPFS Hash storage.
+    * Multi-sig `eSign` verification (Elliptic Curve signatures).
+    * **Gas Efficient:** Lowest cost option for simple agreements.
 
 ---
 
-## 🛠️ Tech Stack Deep Dive
+## ✨ Platform Features
 
-| Component | Tech | Description |
-| :--- | :--- | :--- |
-| **Frontend** | HTML5, CSS3, Vanilla JS | Lightweight, fast UI with no framework bloat. |
-| **Backend** | Node.js, Express.js | Handles API routing, Auth, and AI orchestration. |
-| **Database** | MongoDB (Mongoose) | Stores user profiles, agreement metadata, and signing status. |
-| **Storage** | IPFS (Pinata) | Decentralized, immutable storage for legal documents. |
-| **AI Engine** | Google Gemini 1.5/2.0 | NLP analysis for contract summarization. |
-| **Smart Contracts** | Solidity v0.8.20 | The core logic. |
-| **Privacy Layer** | **Zama fhEVM** | The magic sauce. Enables `euint64` and `ebool` types. |
-| **Testing** | Hardhat | Local development environment. |
+### 🖋️ TinyMCE Expert Editor
+* Integrated the industry-standard **TinyMCE** rich-text editor.
+* Custom plugins for "Drag-and-Drop" variable insertion (e.g., `[Insert Encrypted Salary Field]`).
+* Renders legal formatting (indentation, clauses, fonts) perfectly in the browser.
+
+### 🤖 AI Assistance (Gemini 2.0)
+* **Drafting:** "Write a Non-Compete clause for a NY software engineer."
+* **Context Awareness:** The AI understands our specific `[SECRET_VAR]` syntax and drafts around it.
+
+### 🔍 Private Summarization
+* Summarizes 50-page legal PDFs into a **3-point Risk Audit**.
+* **Privacy Feature:** It highlights *where* the hidden money/variables are located in the text without needing to know the value.
+
+### ⚡ Off-Chain Indexing
+* We run a lightweight **Node.js Indexer** that listens to Zama network events.
+* **Swift Inboxing:** When you open the app, your "Pending Signatures" load instantly from MongoDB, rather than waiting for slow blockchain RPC calls.
+
+### ✍️ eSign Feature
+* Cryptographic approval system.
+* Clicking "Sign" generates an EIP-712 signature.
+* This signature is verified on-chain before any FHE logic (like money movement) can begin.
+
+### 🎨 Professional UI
+* **Enterprise-Grade Dashboard:** Clean, dark-mode interface designed for Legal and HR professionals.
+* **Visual Status:** Color-coded status badges (Draft, Pending, Active, Completed).
 
 ---
 
-## 📂 Project Structure
+## 🛠️ Tech Stack
 
-```bash
-Contracks/
-├── backend/
-│   ├── database/          # MongoDB Schemas (User, Agreement)
-│   ├── middleware/        # Auth (JWT) & COOP/COEP Headers
-│   ├── routes/            # API Endpoints (Upload, Analyze, Sign)
-│   └── server/            # Entry point (Express App)
-├── contracts/             # Solidity Smart Contracts (FHE Logic)
-├── public/                # Static Frontend Files (HTML/CSS/JS)
-├── hardhat.config.js      # Zama/Hardhat Configuration
-└── package.json           # Dependencies
+| Layer | Technology |
+| :--- | :--- |
+| **Privacy** | **Zama fhEVM** (Fully Homomorphic Encryption) |
+| **Contracts** | Solidity v0.8.20 |
+| **Frontend** | Vanilla JS + HTML5 (Zero-bloat) |
+| **Editor** | **TinyMCE** |
+| **Backend** | Node.js / Express |
+| **Database** | MongoDB (Metadata Indexing) |
+| **Storage** | IPFS (via Pinata) |
+| **AI** | **Google Gemini 2.0 Flash** |
+
+---
+
+## 💻 Installation & Setup
+
+1.  **Clone the Repo**
+    ```bash
+    git clone [https://github.com/svajpayee15/Contracks.git](https://github.com/svajpayee15/Contracks.git)
+    cd Contracks
+    npm install
+    ```
+
+2.  **Configure Environment** (`.env`)
+    ```env
+    PORT=3000
+    MONGO_URI=mongodb+srv://...
+    PINATA_JWT=...
+    GEMINI_API_KEY=...
+    PRIVATE_KEY=...
+    ```
+
+3.  **Run Locally**
+    ```bash
+    npm start
+    ```
+    *Access at `http://localhost:3000`*
+
+---
+
+## 📡 API Reference
+
+* `POST /api/save-agreement`: Index a new contract.
+* `GET /api/inbox/:address`: Fetch user's contracts.
+* `POST /api/analyze`: Trigger AI Risk Audit.
+* `PUT /api/sign-agreement`: Execute on-chain signature.
+
+---
+
+## 🛡️ Security & Privacy
+
+* **COOP/COEP Headers:** Enforced for Zama WASM compatibility.
+* **JWT Auth:** Secures the Web2 layer.
+* **Hybrid Encryption:** AES for files (speed) + FHE for logic (utility).
