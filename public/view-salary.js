@@ -1,6 +1,6 @@
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
-import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/public/crypto.js";
-import { ABI } from "https://contracks.vercel.app/public/salary-abi.js";
+import { deriveKeyFromSeed, decryptFile } from "https://contracks.vercel.app/crypto.js";
+import { ABI } from "https://contracks.vercel.app/salary-abi.js";
 
 const CONTRACT_ADDRESS = "0xC676216cE3236CADCc4F4f7673DF6ad45Fdf7B07";
 
