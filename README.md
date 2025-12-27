@@ -69,11 +69,11 @@ We use a **Hybrid Privacy Architecture** that separates Logic (On-Chain) from St
     * The smart contract receives the `Ciphertext`. It stores it and executes the defined logic (e.g., Vesting triggers) automatically.
 5. **View Dashboard:**
    * There are 5 types of different viewing dashboard, so that you can manage and work your contracts effortlessly and efficiently:
-      **1. BoardVoting Agreement dashboard: Voting feature, deadline, finalize results ( admin feature ), contract viewer.
-      **2. Performance Agreement dashboard: Sign agreement ( vendor's feature ), update actualPerformance ( vendor's feature ), calculatePayout, update client satisfaction ( client feature ), contract viewer, 
-      **3. FFP Agreement dashboard: total Budget, milestones, update milestone ( vendor's feature ), pay for milestone ( client feature ), penalize ( client feature ), contract viewer
-      **4. Salary Agreement dashboard: Sign agreement ( employee feature ), increment annually ( employee feature ), contract viwer
-      **5. Plain Agreement dashboard: Sign agreement ( receiver's feature ), contract viewer
+      1. BoardVoting Agreement dashboard: Voting feature, deadline, finalize results ( admin feature ), contract viewer.
+      2. Performance Agreement dashboard: Sign agreement ( vendor's feature ), update actualPerformance ( vendor's feature ), calculatePayout, update client satisfaction ( client feature ), contract viewer, 
+      3. FFP Agreement dashboard: total Budget, milestones, update milestone ( vendor's feature ), pay for milestone ( client feature ), penalize ( client feature ), contract viewer
+      4. Salary Agreement dashboard: Sign agreement ( employee feature ), increment annually ( employee feature ), contract viwer
+      5. Plain Agreement dashboard: Sign agreement ( receiver's feature ), contract viewer
 ---
 
 ## 📜 Smart Contract Suite (The Big 5)
