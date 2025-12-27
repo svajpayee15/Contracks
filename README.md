@@ -31,7 +31,7 @@
 ## 🌟 The Core Innovation
 
 ### The Problem: The "Blockchain Privacy Paradox" that Contracks solves
-Enterprises love the automation of smart contracts but hate the transparency.
+Enterprises love the automation of smart contracts but hate the transparency. Examplea:
 * **HR** cannot stream salaries on-chain because everyone can see the amounts.
 * **Boards** cannot vote on-chain because live tallies influence voter behavior.
 * **Procurement** cannot use smart contracts for "Firm Fixed-Price" (FFP) deals because competitor pricing would be exposed.
@@ -47,28 +47,33 @@ Contracks leverages **Zama's fhEVM** to enable "Blind Computation."
 
 ## 🏗️ Technical Architecture
 
-We use a **Hybrid Privacy Architecture** that separates Logic (On-Chain) from Storage (IPFS).
+We use a **Hybrid Privacy Architecture** that separates Logic (On-Chain) from Storage (IPFS via Pinata).
 
 ### High-Level Data Flow
 
 1.  **Drafting (Client-Side):**
     * User drafts a contract using our **TinyMCE** editor.
-    * User asks AI to help him out.
-    * **Zama SDK** generates ephemeral keys in the browser.
+    * User asks AI to help him out (guiding, contract edit modes).
+    * **Relayer SDK** helps in encrypting dynamic data (eVariables) on the client side.
     * Senstive fields are classified into two: 1. Dynamic Data and 2.Static Data
-    ** Dynamic Data requires compute and is stored on the blockhain and are encrypted variables using Zama's FHE.
-    ** Static Data doesnt requires compute and is stored after encryption in IPFS ( via AES-256 )
-    * The user legal 
-    * Sensitive fields (e.g., `$150,000`, `Vote: YES`) are encrypted into **Ciphertext Handles** (`euint64`).
+    ** Dynamic Data requires compute and is stored on the blockhain and are encrypted variables using Zama's Relayer SDK.
+    ** Static Data doesnt requires compute and is stored after encryption in IPFS( via AES-256 encryption and Pinata for pinning)
+    * Sensitive fields (e.g., `$150,000`, `Vote: YES`) are encrypted into **Ciphertext Handles** with the help of Relayer SDK.
 2.  **Encryption & Indexing:**
     * **Static Data:** The legal text is AES-256 encrypted. The AES key is then encrypted with FHE and stored on-chain (Hybrid Scheme).
     * **Storage:** The encrypted PDF/Text is pinned to **IPFS (Pinata)**.
-    * **Indexing:** Metadata (Sender, Receiver, Status) is synced to **MongoDB** for instant "Inbox" retrieval.
+    * **Indexing:** Metadata (ipfsCID, Sender, Receiver, Status) is synced to **MongoDB** for instant "Inbox" retrieval.
 3.  **AI Analysis:**
     * **qwen2p5-vl-32b-instruct** scans the draft. It ignores the encrypted hash strings but analyzes the surrounding legal clauses for risk.
 4.  **On-Chain Execution:**
     * The smart contract receives the `Ciphertext`. It stores it and executes the defined logic (e.g., Vesting triggers) automatically.
-
+5. **View Dashboard:**
+   * There are 5 types of different viewing dashboard, so that you can manage and work your contracts effortlessly and efficiently:
+      ** 1. BoardVoting Agreement dashboard: Voting feature, deadline, finalize results ( admin feature ), contract viewer.
+      ** 2. Performance Agreement dashboard: Sign agreement ( vendor's feature ), update actualPerformance ( vendor's feature ), calculatePayout, update client satisfaction ( client feature ), contract viewer, 
+      ** 3. FFP Agreement dashboard: total Budget, milestones, update milestone ( vendor's feature ), pay for milestone ( client feature ), penalize ( client feature ), contract viewer
+      ** 4. Salary Agreement dashboard: Sign agreement ( employee feature ), increment annually ( employee feature ), contract viwer
+      ** 5. Plain Agreement dashboard: Sign agreement ( receiver's feature ), contract viewer
 ---
 
 ## 📜 Smart Contract Suite (The Big 5)
@@ -78,36 +83,54 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 ### 1. 🏛️ BoardVoting (Blind Governance)
 * **Use Case:** Secret board resolutions, DAO governance, and sensitive motion passing.
 * **FHE Logic:**
+    * The admin needs to whitlist walletaddress with their governance
     * Votes are cast as `ebool` (Encrypted Boolean).
     * The contract sums them: `Total = TFHE.add(VoteA, VoteB)`.
-    * **Privacy:** The tally is hidden until the deadline. Even the admin cannot see individual votes.
+    * Uses Public Decryption to decrypt results after the deadline only, And doesnt reveal voting choices, and voting results only the Final Result ( Passed, Rejected) so that no one can trace out voting choices     through governance.
+    * **Privacy:** The tally is hidden until the deadline. Even the admin cannot see individual votes and tally can be publicly decrypted after the deadline.
+* **Computation:** `euint64 userVoteWeightage = FHE.select(
+                     userVote, 
+                     FHE.asEuint64(weightage[_ipfsCID][msg.sender]), 
+                     FHE.asEuint64(0)
+                   );
+                   v.totalYesVotesWeightage = FHE.add(v.totalYesVotesWeightage, userVoteWeightage);`
+                   `ebool isPassed = FHE.gt(v.totalYesVotesWeightage, FHE.asEuint64(halfWeight));`
+                   
 
-### 2. 📈 Performance (Confidential Vesting)
-* **Use Case:** Employee bonuses based on secret KPI targets (e.g., "Hit $1M revenue").
+### 2. 📈 Performance (.)
+* **Use Case:** Employee bonuses based on secret targets (e.g., "Hit $1M revenue").
 * **FHE Logic:**
-    * **Inputs:** `euint128 target`, `euint128 actualPerformance`.
-    * **Computation:** `TFHE.gt(actualPerformance, target)` (Greater Than).
-    * **Result:** If true, the contract auto-releases the bonus. The public never knows the target or the result.
+    * **Inputs:** `euint128 target`, `euint128 actualPerformance, ebool employerSatisfaction, euin128 finalPayout, ebool isFinalized`.
+    * **Computation:** ` ebool targetMet = FHE.ge(job.actualPerformance, job.target);
+                         ebool isEligible = FHE.and(targetMet, job.employerSatisfied);
+                         euint128 zero = FHE.asEuint128(0);
+                         euint128 payout = FHE.select(isEligible, job.bonus, zero);.`
+    * **Result:** If true, the contract auto-releases the bonus. The public never knows the target or the actualPerformance.
 
 ### 3. 💼 FFP (Firm Fixed-Price)
 * **Use Case:** Procurement and Freelance contracts where the total value must remain hidden from competitors.
 * **FHE Logic:**
     * **Inputs:** `euint128 fixedFee`, `ebool deliverableAccepted`.
-    * **Mechanism:** The client deposits an encrypted amount. Upon `deliverableAccepted` == `true`, the funds move.
+    * **Mechanism:**  ``
     * **Privacy:** On-chain observers see a transaction, but the `Amount` is `0x...` (Encrypted).
 
-### 4. 💰 Salary (Confidential Streaming)
+### 4. 💰 Salary (Confidential Increment and Salary)
 * **Use Case:** Continuous payroll streams that protect employee privacy.
 * **FHE Logic:**
-    * **Inputs:** `euint64 flowRate` (Salary per second).
-    * **Computation:** `Claimable = TFHE.mul(flowRate, timeElapsed)`.
-    * **Feature:** Allows employees to generate a "Proof of Income" (ZKP) for loans without revealing their exact salary to the bank.
+    * **Inputs:** .
+    * **Computation:**   `euint64 rate64 = FHE.asEuint64(salaryAgreement[_ipfsCID].incrementRate);
+                          euint64 increaseAmount = FHE.mul(salaryAgreement[_ipfsCID].baseSalary, rate64);
+                          increaseAmount = FHE.div(increaseAmount, 100);
+                          euint64 newSalary = FHE.add(salaryAgreement[_ipfsCID].baseSalary, increaseAmount);. `
+                          
+    * **Feature:** The employee can come at the end of the year and check his incremented salary with ever revealing it to the public.
 
 ### 5. 📝 PlainAgreement (Standard CLM)
 * **Use Case:** Non-financial legal documents (NDAs, MOUs) that need immutable signing but no computational logic.
 * **Logic:**
     * IPFS Hash storage.
-    * Multi-sig `eSign` verification (Elliptic Curve signatures).
+    * Multi-sig `eSign` verification.
+    * Mostly dependent on Private variable storing.
     * **Gas Efficient:** Lowest cost option for simple agreements.
 
 ---
@@ -119,12 +142,13 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 * Just enclose Dynamic Variables between {{dVar}} and Static Variables between [[sVar]]
 * Renders legal formatting (indentation, clauses, fonts) perfectly in the browser.
 
-### 🤖 AI Assistance (Gemini 2.0)
+### 🤖 AI Assistance (Qwen)
 * **Drafting:** "Write a Non-Compete clause for a NY software engineer."
 * **Context Awareness:** The AI understands our specific `[[SECRET_VAR]] & {{FHE_VAR}}` syntax and drafts around it.
+* ** Summarize:** We can also use AI to summarize our inbox agreements
 
 ### 🔍 Private Summarization
-* Summarizes the legal PDFs user is indulged in, into a **3-point Risk Audit** with Google Gemini without exposing the private fields.
+* Summarizes the legal PDFs user is indulged in, into a **3-point Risk Audit** with Qwen without exposing the private fields.
 * **Privacy Feature:** It highlights *where* the hidden money/variables are located in the text without needing to know the value.
 
 ### ⚡ Off-Chain Indexing
@@ -137,10 +161,10 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 * This signature is verified on-chain before any FHE logic (like money movement) can begin.
 
 ### 🎨 Professional UI
-* **Enterprise-Grade Dashboard:** Clean, light-mode interface designed for Legal and HR professionals.
-* **Visual Status:** Color-coded status badges (Draft, Pending, Active, Completed).
+* **Enterprise-Grade Dashboard:** Clean, light-mode interface designed for Legal professionals.
+* **Editor:** Contract uses TinyMCE premium editor, AI for drafting your contracts with structured formating/styling
 * **Sophisticated but Clean UI:** The data is well structured and organized.
-* **Responsive UI:** Legal work ? But away from Keyboard. No problem Contracks is Responsive but still clean. 
+* **Responsive UI:** Legal work? But away from Keyboard. No problem Contracks is Responsive but still clean. 
 
 ---
 
@@ -148,14 +172,15 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 
 | Layer | Technology |
 | :--- | :--- |
-| **Privacy** | **Zama fhEVM** (Fully Homomorphic Encryption) |
+| **Privacy** | **Zama fhEVM** (Fully Homomorphic Encryption), AES-256|
 | **Contracts** | Solidity v0.8.20 |
-| **Frontend** | Vanilla JS, HTML5 (Zero-bloat), CSS3, Ethers, RelayerSDK |
+| **Tests** | | Hardhat |
+| **Frontend** | Vanilla JS, HTML5, CSS3, Ethers, RelayerSDK |
 | **Editor** | **TinyMCE** |
 | **Backend** | Node.js / Express |
 | **Database** | MongoDB Atlas (Metadata Indexing) |
 | **Storage** | IPFS (via Pinata) |
-| **AI** | **Google Gemini 2.0 Flash** |
+| **AI** | **qwen2p5-vl-32b-instruct** |
 
 ---
 
@@ -164,7 +189,6 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 1.  **Clone the Repo**
     ```bash
     git clone [https://github.com/svajpayee15/Contracks.git](https://github.com/svajpayee15/Contracks.git)
-    cd Contracks
     npm install
     ```
 
@@ -173,13 +197,13 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
     PORT=3000
     MONGO_URI=mongodb+srv://...
     PINATA_JWT=...
-    GEMINI_API_KEY=...
+    FIREWORKS_API_KEY=...
     PRIVATE_KEY=...
     ```
 
 3.  **Run Locally**
     ```bash
-    npm start
+    node server.js
     ```
     *Access at `http://localhost:3000`*
 
@@ -188,8 +212,10 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 ## 📡 API Reference
 
 * `POST /api/save-agreement`: Index a new contract.
-* `GET /api/inbox/:address`: Fetch user's contracts.
+* `GET /api/inbox/:address`: Fetch user's incoming contracts.
+* `GET /api/sent/:address`: Fetch user's sent contracts.
 * `POST /api/analyze`: Trigger AI Risk Audit.
+* `POST /login`: Login User.
 * `PUT /api/sign-agreement`: Execute on-chain signature.
 
 ---
