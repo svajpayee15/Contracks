@@ -111,7 +111,14 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 * **Use Case:** Procurement and Freelance contracts where the total value must remain hidden from competitors.
 * **FHE Logic:**
     * **Inputs:** `euint128 fixedFee`, `ebool deliverableAccepted`.
-    * **Mechanism:**  ``
+    * **Computation:**  `euint8 penalty = FHE.select(
+                FHE.and(FHE.le(penaltyRaw, 100), FHE.ge(penaltyRaw, 0)), 
+                penaltyRaw, 
+                FHE.asEuint8(0)
+            );
+            totalBudget = FHE.add(totalBudget, amount);`
+            ` euint64 reduction = FHE.div(FHE.mul(m.amount, ePenalty64), 100);
+             m.amount = FHE.sub(m.amount, reduction);`
     * **Privacy:** On-chain observers see a transaction, but the `Amount` is `0x...` (Encrypted).
 
 ### 4. 💰 Salary (Confidential Increment and Salary)
