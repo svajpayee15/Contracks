@@ -16,6 +16,7 @@
 
 ## 📚 Table of Contents
 
+0. [📽️Youtube Video](https://youtu.be/HXGtlvZz2pc)
 1. [🌟 The Core Innovation](#-the-core-innovation)
 2. [🏗️ Technical Architecture](#-technical-architecture)
 3. [📜 Smart Contract Suite (The Big 5)](#-smart-contract-suite-the-big-5)
