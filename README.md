@@ -145,7 +145,7 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 ### 🤖 AI Assistance (Qwen)
 * **Drafting:** "Write a Non-Compete clause for a NY software engineer."
 * **Context Awareness:** The AI understands our specific `[[SECRET_VAR]] & {{FHE_VAR}}` syntax and drafts around it.
-* ** Summarize:** We can also use AI to summarize our inbox agreements
+* **Summarize:** We can also use AI to summarize our inbox agreements
 
 ### 🔍 Private Summarization
 * Summarizes the legal PDFs user is indulged in, into a **3-point Risk Audit** with Qwen without exposing the private fields.
@@ -174,7 +174,7 @@ We have deployed 5 specialized FHE contracts to handle the entire lifecycle of e
 | :--- | :--- |
 | **Privacy** | **Zama fhEVM** (Fully Homomorphic Encryption), AES-256|
 | **Contracts** | Solidity v0.8.20 |
-| **Tests** | | Hardhat |
+| **Tests** | Hardhat |
 | **Frontend** | Vanilla JS, HTML5, CSS3, Ethers, RelayerSDK |
 | **Editor** | **TinyMCE** |
 | **Backend** | Node.js / Express |
