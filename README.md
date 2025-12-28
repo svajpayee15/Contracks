@@ -10,6 +10,13 @@
   <img src="public/LooperGroup.png">
 </p>
 
+<p align="center">
+There's no privacy provided in CLM platforms.
+If there is then its only for data which not requires compute.
+But what about data which requires compute and also privacy ?
+Contracks is the solution to this big problem.
+</p>
+
 > **"Privacy where it matters, Transparency where it counts."**
 >
 > Contracks is the world's first **Hybrid Confidential CLM** platform built on Ethereum (Sepolia) using **Zama's fhEVM**. It empowers enterprises to draft, sign, and **automatically execute** legal agreements on-chain without ever revealing sensitive business data (salaries, votingStategy, targets, bonuses, etc) to the public.
