@@ -1,4 +1,4 @@
-#  <img src="public/LooperGroup.png"> Contracks: The Confidential Contract Lifecycle Management (CLM) Platform
+# Contracks: The Confidential Contract Lifecycle Management (CLM) Platform
 
 ![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
 ![Network](https://img.shields.io/badge/Network-Zama%20fhEVM-orange)
