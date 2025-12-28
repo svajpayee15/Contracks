@@ -6,6 +6,8 @@
 ![AI](https://img.shields.io/badge/AI-Qwen-blue)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
+![Contracks logo](public/LooperGroup.png)
+
 > **"Privacy where it matters, Transparency where it counts."**
 >
 > Contracks is the world's first **Hybrid Confidential CLM** platform built on Ethereum (Sepolia) using **Zama's fhEVM**. It empowers enterprises to draft, sign, and **automatically execute** legal agreements on-chain without ever revealing sensitive business data (salaries, votingStategy, targets, bonuses, etc) to the public.
