@@ -18,13 +18,14 @@
 
 0. [📽️Youtube Video](https://youtu.be/U7MI43fSuYk)
 1. [🌟 The Core Innovation](#-the-core-innovation)
-2. [🏗️ Technical Architecture](#-technical-architecture)
-3. [📜 Smart Contract Suite (The Big 5)](#-smart-contract-suite-the-big-5)
-4. [✨ Platform Features](#-platform-features)
-5. [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
-6. [💻 Installation & Setup](#-installation--setup)
-7. [📡 API Reference](#-api-reference)
-8. [🛡️ Security & Privacy](#%EF%B8%8F-security--privacy)
+2. [📜 Deployed Contract Addresses](#-deployed-contract-addresses)
+3. [🏗️ Technical Architecture](#-technical-architecture)
+4. [📜 Smart Contract Suite (The Big 5)](#-smart-contract-suite-the-big-5)
+5. [✨ Platform Features](#-platform-features)
+6. [🛠️ Tech Stack](#%EF%B8%8F-tech-stack)
+7. [💻 Installation & Setup](#-installation--setup)
+8. [📡 API Reference](#-api-reference)
+9. [🛡️ Security & Privacy](#%EF%B8%8F-security--privacy)
 
 ---
 
@@ -42,6 +43,15 @@ Contracks leverages **Zama's fhEVM** to enable "Blind Computation."
 * **Contracks FHE:** We perform logic on encrypted data directly.
     * *Example:* `Encrypt(Target) - Encrypt(Performance) = Encrypted(Result)`
     * The blockchain validator executes this math **without ever seeing the numbers**.
+
+---
+
+## 📜 Deployed Contract Addresses
+1. `BoardVotingTemplate.sol`: `0x093Ce64c121d51FC03d71C25B715E7C1E4374C53`
+2. `PerformanceTemplate.sol`: `0x95E96dC42Dd16788ab9D3d1FF941498D8b5B4B21`
+3. `FFPTemplate.sol`: `0x98FB4c8963edAccA8e83a82C157797a4305455Ab`
+4. `SalaryTemplate.sol`: `0xC676216cE3236CADCc4F4f7673DF6ad45Fdf7B07`
+5. `PlainAgreementTemplate.sol`: `0x02f397462F05CCEf87F3ED51793B4b7bB9524A49`
 
 ---
 
