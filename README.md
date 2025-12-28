@@ -6,16 +6,25 @@
 ![AI](https://img.shields.io/badge/AI-Qwen-blue)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
+--- 
+
 <p align="center">
   <img src="public/LooperGroup.png">
 </p>
-
 <p align="center">
 There's no privacy provided in CLM platforms.
+</p>
+<p align="center">
 If there is then its only for data which not requires compute.
+</p>
+<p align="center">
 But what about data which requires compute and also privacy ?
+</p>
+<p align="center">
 Contracks is the solution to this big problem.
 </p>
+
+---
 
 > **"Privacy where it matters, Transparency where it counts."**
 >
