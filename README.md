@@ -6,7 +6,9 @@
 ![AI](https://img.shields.io/badge/AI-Qwen-blue)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
-![Contracks logo](public/LooperGroup.png)
+<p align="center">
+  <img src="public/LooperGroup.png">
+</p>
 
 > **"Privacy where it matters, Transparency where it counts."**
 >
