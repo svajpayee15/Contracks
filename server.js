@@ -28,6 +28,9 @@ const publicPath = path.join(__dirname, './public');
 const mongoURI = process.env.MONGODB_URI;
 
 const connectDB = async () => {
+  if (mongoose.connection.readyState === 1) {
+    return;
+  }
   try {
     await mongoose.connect(mongoURI);
     console.log('✅MongoDB connected successfully!');
@@ -36,7 +39,6 @@ const connectDB = async () => {
     process.exit(1); 
   }
 };
-connectDB()
 // --- GLOBAL MIDDLEWARE ---
 app.use((req, res, next) => {
     // Security headers for SharedArrayBuffer (Zama requirement)
@@ -106,6 +108,7 @@ app.use("/api", uploadContract);
 // --- B. AI Analysis (Gemini) ---
 // --- B. AI Analysis (Fireworks AI / Qwen 2.5) ---
 app.post('/api/analyze', async (req, res) => {
+    await connectDB()
     const { text, docType, query, task } = req.body;
 
     if (!text) return res.status(400).send("No content provided.");
@@ -203,6 +206,7 @@ app.post('/api/analyze', async (req, res) => {
 
 // --- C. Auth (Login) ---
 app.post("/login", async (req, res) => {
+    await connectDB()
     try {
         let { walletAddress, name } = req.body;
         console.log(walletAddress,name)
@@ -234,6 +238,7 @@ app.post("/login", async (req, res) => {
 
 // Save Agreement Metadata
 app.post("/api/save-agreement", authenticate, async (req, res) => {
+    await connectDB()
     try {
         const { ipfsCID, sender, receiver, type } = req.body;
 
@@ -259,6 +264,7 @@ app.post("/api/save-agreement", authenticate, async (req, res) => {
 
 // Fetch Inbox
 app.get('/api/inbox/:address', authenticate, async (req, res) => {
+    await connectDB()
     try {
         const { address } = req.params;
         const agreements = await agreementSchema.find({ receiver: { $in: [address]} })
@@ -271,6 +277,7 @@ app.get('/api/inbox/:address', authenticate, async (req, res) => {
 
 // Fetch Sent Items
 app.get('/api/sent/:address', authenticate, async (req, res) => {
+    await connectDB()
     try {
         const { address } = req.params;
         const agreements = await agreementSchema.find({ sender: address })
@@ -283,6 +290,7 @@ app.get('/api/sent/:address', authenticate, async (req, res) => {
 
 // Update Sign Status
 app.put('/api/sign-agreement', async(req, res) => {
+    await connectDB()
     try {
         const { ipfsCID, address } = req.body;
 
