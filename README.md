@@ -18,7 +18,7 @@ There's no privacy provided in CLM platforms.
 If there is then its only for data which not requires compute.
 </p>
 <p align="center">
-But what about data which requires compute and also privacy ?
+But what about data which requires compute, privacy and workflow ease ?
 </p>
 <p align="center">
 Contracks is the solution to this big problem.
