@@ -7,6 +7,7 @@
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
 # Update: Contracks won the Zama Developer Program.
+https://x.com/zama/status/2037196966048813427?s=20
 --- 
 
 <p align="center">
