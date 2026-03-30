@@ -1,11 +1,12 @@
 # Contracks: The Confidential Contract Lifecycle Management (CLM) Platform
 
-![Status](https://img.shields.io/badge/Status-Production%20Ready-success)
+![Status](https://img.shields.io/badge/Status-Alpha%20Ready-success)
 ![Network](https://img.shields.io/badge/Network-Zama%20fhEVM-orange)
 ![Privacy](https://img.shields.io/badge/Privacy-Fully%20Homomorphic%20Encryption-purple)
 ![AI](https://img.shields.io/badge/AI-Qwen-blue)
 ![License](https://img.shields.io/badge/License-MIT-lightgrey)
 
+# Update: Contracks won the Zama Developer Program.
 --- 
 
 <p align="center">
